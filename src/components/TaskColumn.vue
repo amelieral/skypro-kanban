@@ -5,28 +5,23 @@
     </div>
     <div class="cards">
       <TaskItem 
-          v-for="(task, index) in tasks" 
-          :key="index" 
-          :task="task"
+        v-for="task in tasks" 
+        :key="task.id"
+        :task="task"
       />
     </div>
   </div>
 </template>
 
 <script>
-import TaskItem from './Task.vue'
+import TaskItem from './Task.vue';
 
 export default {
   name: 'TaskColumn',
-  components: {
-    TaskItem
-  },
+  components: { TaskItem },
   props: {
     title: String,
-    tasks: {
-      type: Array,
-      default: () => []
-    }
+    tasks: Array
   }
 }
 </script>

@@ -5,7 +5,12 @@
     <main class="main">
       <div class="container">
         <div class="main__block">
-          <TaskDesk :columns="columns" />
+
+          <div v-if="isLoading" class="loading">
+            <p>Данные загружаются...</p>
+          </div>
+
+          <TaskDesk v-else :columns="columns" />
         </div>
       </div>
     </main>
@@ -17,11 +22,13 @@
 </template>
 
 <script>
-import BaseHeader from '@/components/BaseHeader.vue'
-import TaskDesk from '@/components/TaskDesk.vue'
-import TaskModal from '@/components/TaskModal.vue'
-import NewCardModal from '@/components/NewCardModal.vue'
-import ExitModal from '@/components/ExitModal.vue'
+import { ref, onMounted } from 'vue';
+import { tasks } from '@/mocks/tasks';
+import BaseHeader from '@/components/BaseHeader.vue';
+import TaskDesk from '@/components/TaskDesk.vue';
+import TaskModal from '@/components/TaskModal.vue';
+import NewCardModal from '@/components/NewCardModal.vue';
+import ExitModal from '@/components/ExitModal.vue';
 
 export default {
   name: 'HomeView',
@@ -32,103 +39,73 @@ export default {
     NewCardModal,
     ExitModal
   },
-data() {
-    return {
-      columns: [
-        {
+
+  setup() {
+    const isLoading = ref(true);
+    const columns = ref([]);
+
+    onMounted(() => {
+      setTimeout(() => {
+        columns.value = [
+          {
+          id: 1,
           title: 'Без статуса',
-          tasks: [
-            {
-              theme: 'orange',
-              category: 'Web Design',
-              title: 'Название задачи',
-              date: '30.10.23'
-            },
-            {
-              theme: 'green',
-              category: 'Research',
-              title: 'Название задачи',
-              date: '01.11.23'
-            },
-            {
-              theme: 'purple',
-              category: 'Copywriting',
-              title: 'Название задачи',
-              date: '25.10.23'
-            }
-          ]
+          tasks: tasks.filter(task => task.status === 'Без статуса')
         },
         {
+          id: 2,
           title: 'Нужно сделать',
-          tasks: [
-            {
-              theme: 'green',
-              category: 'Research',
-              title: 'Название задачи',
-              date: '28.10.23'
-            },
-            {
-              theme: 'orange',
-              category: 'Web Design',
-              title: 'Название задачи',
-              date: '29.10.23'
-            }
-          ]
+          tasks: tasks.filter(task => task.status === 'Нужно сделать')
         },
         {
+          id: 3,
           title: 'В работе',
-          tasks: [
-            {
-              theme: 'purple',
-              category: 'Copywriting',
-              title: 'Название задачи',
-              date: '27.10.23'
-            },
-            {
-              theme: 'orange',
-              category: 'Web Design',
-              title: 'Название задачи',
-              date: '02.11.23'
-            },
-            {
-              theme: 'green',
-              category: 'Research',
-              title: 'Название задачи',
-              date: '03.11.23'
-            }
-          ]
+          tasks: tasks.filter(task => task.status === 'В работе')
         },
         {
+          id: 4,
           title: 'Тестирование',
-          tasks: [
-            {
-              theme: 'orange',
-              category: 'Web Design',
-              title: 'Название задачи',
-              date: '05.11.23'
-            }
-          ]
+          tasks: tasks.filter(task => task.status === 'Тестирование')
         },
         {
+          id: 5,
           title: 'Готово',
-          tasks: [
-            {
-              theme: 'green',
-              category: 'Research',
-              title: 'Название задачи',
-              date: '20.10.23'
-            },
-            {
-              theme: 'purple',
-              category: 'Copywriting',
-              title: 'Название задачи',
-              date: '22.10.23'
-            }
-          ]
+          tasks: tasks.filter(task => task.status === 'Готово')
         }
-      ]
+      ];
+      isLoading.value = false;
+      }, 2000); 
+    });
+
+    return {
+      isLoading,
+      columns
+    };
     }
   }
-}
 </script>
+
+<style scoped>
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  font-size: 24px;
+  color: #94A6BE;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  margin: 20px 0;
+}
+
+.loading p {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+</style>
 
