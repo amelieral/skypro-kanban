@@ -1,8 +1,8 @@
 <template>
   <div class="main__content">
     <TaskColumn 
-      v-for="(column, index) in columns" 
-      :key="index"
+      v-for="column in columns" 
+      :key="column.id"
       :title="column.title"
       :tasks="column.tasks"
     />
@@ -10,13 +10,11 @@
 </template>
 
 <script>
-import TaskColumn from './TaskColumn.vue'
+import TaskColumn from './TaskColumn.vue';
 
 export default {
   name: 'TaskDesk',
-  components: {
-    TaskColumn
-  },
+  components: { TaskColumn },
   props: {
     columns: {
       type: Array,
