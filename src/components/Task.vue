@@ -2,8 +2,8 @@
   <div class="cards__item">
     <div class="cards__card card">
       <div class="card__group">
-        <div :class="['card__theme', `_${getTopicClass(task.topic)}`]">
-          <p :class="`_${getTopicClass(task.topic)}`">{{ task.topic }}</p>
+        <div :class="['card__theme', getThemeClass(task.topic)]">
+          <p :class="getThemeClass(task.topic)">{{ task.topic }}</p>
         </div>
         <a href="#taskModal">
           <div class="card__btn">
@@ -51,13 +51,13 @@ export default {
     }
   },
   methods: {
-    getTopicClass(topic) {
-      const map = {
-        'Web Design': 'orange',
-        'Research': 'green',
-        'Copywriting': 'purple'
-      };
-      return map[topic] || 'gray';
+    getThemeClass(topic) {
+      const themeMap = {
+        'Web Design': '_orange',
+        'Research': '_green',
+        'Copywriting': '_purple'
+      }
+      return themeMap[topic] || '_gray';
     },
     formatDate(dateString) {
       const date = new Date(dateString);
@@ -70,3 +70,116 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+
+.cards__item {
+  padding: 5px;
+  animation: card-animation 500ms linear;
+}
+
+.cards__card {
+  width: 220px;
+  height: 130px;
+  background-color: #FFFFFF;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: stretch;
+  padding: 15px 13px 19px;
+}
+
+.card__group {
+  width: 100%;
+  height: 20px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card__theme {
+  width: auto;
+  height: 20px;
+  padding: 5px 14px;
+  border-radius: 18px;
+}
+
+.card__theme p {
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 10px;
+}
+
+.card__btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 2px;
+}
+
+.card__btn div {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: #94A6BE;
+}
+
+.card__title {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  color: #000000;
+  margin-bottom: 10px;
+}
+
+.card__content {
+  height: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.card__date {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.card__date p {
+  margin-left: 6px;
+  font-size: 10px;
+  line-height: 13px;
+  color: #94A6BE;
+  letter-spacing: 0.2px;
+}
+
+@media screen and (max-width: 1200px) {
+  .cards__card {
+    width: 220px;
+    height: 130px;
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: stretch;
+    padding: 15px 13px 19px;
+  }
+}
+
+@keyframes card-animation {
+  0% { height: 0; opacity: 0; }
+  100% { height: auto; opacity: 1; }
+}
+
+._orange { background-color: #FFE4C2; color: #FF6D00; }
+._green { background-color: #B4FDD1; color: #06B16E; }
+._purple { background-color: #E9D4FF; color: #9A48F1; }
+._gray { background-color: #94A6BE; color: #FFFFFF; }
+
+</style>
