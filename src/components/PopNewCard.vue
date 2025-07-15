@@ -1,19 +1,13 @@
 <template>
-  <div class="pop-new-card" id="newCardModal" v-if="isVisible" @click.self="closeModal">
+  <div class="pop-new-card" id="popNewCard">
     <div class="pop-new-card__container">
       <div class="pop-new-card__block">
         <div class="pop-new-card__content">
           <h3 class="pop-new-card__ttl">Создание задачи</h3>
-          <a href="#" class="pop-new-card__close" @click.prevent="closeModal">&#10006;</a>
+          <a href="#" class="pop-new-card__close">&#10006;</a>
           <div class="pop-new-card__wrap">
             <form class="pop-new-card__form form-new" id="formNewCard" action="#">
               <div class="form-new__block">
-                <label for="formTitle" class="subttl">Название задачи</label>
-                <input class="form-new__input" type="text" name="name" id="formTitle" placeholder="Введите название задачи..." autofocus>
-              </div>
-              <div class="form-new__block">
-                <label for="textArea" class="subttl">Описание задачи</label>
-                <textarea class="form-new__area" name="text" id="textArea" placeholder="Введите описание задачи..."></textarea>
               </div>
             </form>
             <div class="pop-new-card__calendar calendar">
@@ -113,7 +107,7 @@
 
 <script>
 export default {
-  name: 'NewCardModal',
+  name: 'PopNewCard',
   methods: {
     getThemeClass(topic) {
       const themes = {
@@ -128,7 +122,6 @@ export default {
 </script>
 
 <style scoped>
-
 .pop-new-card__content {
   display: block;
   text-align: left;
@@ -152,46 +145,40 @@ export default {
   margin-bottom: 20px;
 }
 .pop-new-card {
-  width: 100%;
-  min-width: 375px;
-  height: 100%;
-  min-height: 100vh;
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 6;
-  display: block;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .pop-new-card__container {
-  width: 100%;
-  height: 100%;
-  min-height: 100vh;
-  padding: 0 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.4);
+  background: transparent;
+  padding: 0;
 }
 
 .pop-new-card__block {
-  display: block;
-  margin: 0 auto;
-  background-color: #FFFFFF;
+  background: #ffffff;
   max-width: 630px;
   width: 100%;
   padding: 40px 30px 48px;
   border-radius: 10px;
-  border: 0.7px solid #D4DBE5;
+  border: 0.7px solid #d4dbe5;
   position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .pop-new-card__close {
   position: absolute;
   top: 20px;
   right: 30px;
-  color: #94A6BE;
+  color: #94a6be;
   cursor: pointer;
 }
 .pop-new-card__close:hover {
@@ -204,7 +191,6 @@ export default {
   justify-content: space-between;
   gap: 20px;
 }
-
 
 .categories {
   margin-bottom: 20px;
@@ -229,7 +215,7 @@ export default {
 }
 
 .calendar__p {
-  color: #94A6BE;
+  color: #94a6be;
   font-size: 10px;
   line-height: 1;
 }
@@ -247,7 +233,7 @@ export default {
 }
 
 .calendar__month {
-  color: #94A6BE;
+  color: #94a6be;
   font-size: 14px;
   line-height: 25px;
   font-weight: 600;
@@ -267,7 +253,7 @@ export default {
 }
 
 .calendar__day-name {
-  color: #94A6BE;
+  color: #94a6be;
   font-size: 10px;
   font-weight: 500;
   line-height: normal;
@@ -290,7 +276,7 @@ export default {
   flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
-  color: #94A6BE;
+  color: #94a6be;
   font-size: 10px;
   line-height: 1;
   letter-spacing: -0.2px;
@@ -302,13 +288,13 @@ export default {
 }
 
 .calendar__cell._cell-day:hover {
-  color: #94A6BE;
-  background-color: #EAEEF6;
+  color: #94a6be;
+  background-color: #eaeef6;
 }
 
 .calendar__cell._active-day {
-  background-color: #94A6BE;
-  color: #FFFFFF;
+  background-color: #94a6be;
+  color: #ffffff;
 }
 
 .calendar__cell._current {
@@ -320,13 +306,13 @@ export default {
 }
 
 ._cell-day:hover {
-  color: #94A6BE;
-  background-color: #EAEEF6;
+  color: #94a6be;
+  background-color: #eaeef6;
 }
 
 ._active-day {
-  background-color: #94A6BE;
-  color: #FFFFFF;
+  background-color: #94a6be;
+  color: #ffffff;
 }
 
 .nav__actions {
@@ -345,7 +331,7 @@ export default {
 }
 
 .nav__action svg {
-  fill: #94A6BE;
+  fill: #94a6be;
 }
 
 .categories__themes {
@@ -367,7 +353,8 @@ export default {
   opacity: 1 !important;
 }
 
-.form-new__input, .form-new__area {
+.form-new__input,
+.form-new__area {
   width: 100%;
   outline: none;
   padding: 14px;
@@ -392,14 +379,14 @@ export default {
 .form-new__create {
   width: 132px;
   height: 30px;
-  background-color: #565EEF;
+  background-color: #565eef;
   border-radius: 4px;
   border: 0;
   outline: none;
   font-size: 14px;
   font-weight: 500;
   line-height: 1;
-  color: #FFFFFF;
+  color: #ffffff;
   float: right;
 }
 
@@ -411,7 +398,8 @@ export default {
   display: flex;
   flex-direction: column;
 }
-.form-new__input, .form-new__area {
+.form-new__input,
+.form-new__area {
   width: 100%;
   outline: none;
   padding: 14px;
@@ -422,18 +410,20 @@ export default {
   line-height: 1;
   letter-spacing: -0.14px;
 }
-.form-new__input::-moz-placeholder, .form-new__area::-moz-placeholder {
+.form-new__input::-moz-placeholder,
+.form-new__area::-moz-placeholder {
   font-weight: 400;
   font-size: 14px;
   line-height: 1px;
-  color: #94A6BE;
+  color: #94a6be;
   letter-spacing: -0.14px;
 }
-.form-new__input::placeholder, .form-new__area::placeholder {
+.form-new__input::placeholder,
+.form-new__area::placeholder {
   font-weight: 400;
   font-size: 14px;
   line-height: 1px;
-  color: #94A6BE;
+  color: #94a6be;
   letter-spacing: -0.14px;
 }
 .form-new__input {
@@ -447,24 +437,25 @@ export default {
 .form-new__create {
   width: 132px;
   height: 30px;
-  background-color: #565EEF;
+  background-color: #565eef;
   border-radius: 4px;
   border: 0;
   outline: none;
   font-size: 14px;
   font-weight: 500;
   line-height: 1;
-  color: #FFFFFF;
+  color: #ffffff;
   float: right;
 }
 
 @media screen and (max-width: 660px) {
-  
   .calendar {
-      max-width: 340px;
-      width: 100%;
-    }
-  .calendar__ttl, .calendar__nav, .calendar__period {
+    max-width: 340px;
+    width: 100%;
+  }
+  .calendar__ttl,
+  .calendar__nav,
+  .calendar__period {
     padding: 0;
   }
   .calendar .date-create {
@@ -506,7 +497,6 @@ export default {
 }
 
 @media screen and (max-width: 495px) {
-
   .pop-new-card__container {
     padding: 0;
     justify-content: flex-start;

@@ -153,7 +153,6 @@ export default {
 </script>
 
 <style scoped>
-
 .pop-browse__content {
   display: block;
   text-align: left;
@@ -191,18 +190,21 @@ export default {
   display: block;
   margin-bottom: 20px;
 }
-.pop-browse__btn-browse, .pop-browse__btn-edit {
+.pop-browse__btn-browse,
+.pop-browse__btn-edit {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
 }
-.pop-browse__btn-browse button, .pop-browse__btn-edit button {
+.pop-browse__btn-browse button,
+.pop-browse__btn-edit button {
   height: 30px;
   margin-bottom: 10px;
   padding: 0 14px;
 }
-.pop-browse__btn-browse .btn-group button, .pop-browse__btn-edit .btn-group button {
+.pop-browse__btn-browse .btn-group button,
+.pop-browse__btn-edit .btn-group button {
   margin-right: 8px;
 }
 
@@ -234,7 +236,7 @@ export default {
   width: 100%;
   outline: none;
   padding: 14px;
-  background: #EAEEF6;
+  background: #eaeef6;
   border: 0.7px solid rgba(148, 166, 190, 0.4);
   border-radius: 8px;
   font-size: 14px;
@@ -247,26 +249,26 @@ export default {
   font-weight: 400;
   font-size: 14px;
   line-height: 1px;
-  color: #94A6BE;
+  color: #94a6be;
   letter-spacing: -0.14px;
 }
 .form-browse__area::placeholder {
   font-weight: 400;
   font-size: 14px;
   line-height: 1px;
-  color: #94A6BE;
+  color: #94a6be;
   letter-spacing: -0.14px;
 }
 
 .pop-browse__block {
   display: block;
   margin: 0 auto;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   max-width: 630px;
   width: 100%;
   padding: 40px 30px 38px;
   border-radius: 10px;
-  border: 0.7px solid #D4DBE5;
+  border: 0.7px solid #d4dbe5;
   position: relative;
 }
 
@@ -298,7 +300,7 @@ export default {
 }
 
 .calendar__p {
-  color: #94A6BE;
+  color: #94a6be;
   font-size: 10px;
   line-height: 1;
 }
@@ -316,7 +318,7 @@ export default {
 }
 
 .calendar__month {
-  color: #94A6BE;
+  color: #94a6be;
   font-size: 14px;
   line-height: 25px;
   font-weight: 600;
@@ -336,7 +338,7 @@ export default {
 }
 
 .calendar__day-name {
-  color: #94A6BE;
+  color: #94a6be;
   font-size: 10px;
   font-weight: 500;
   line-height: normal;
@@ -359,7 +361,7 @@ export default {
   flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
-  color: #94A6BE;
+  color: #94a6be;
   font-size: 10px;
   line-height: 1;
   letter-spacing: -0.2px;
@@ -371,13 +373,13 @@ export default {
 }
 
 .calendar__cell._cell-day:hover {
-  color: #94A6BE;
-  background-color: #EAEEF6;
+  color: #94a6be;
+  background-color: #eaeef6;
 }
 
 .calendar__cell._active-day {
-  background-color: #94A6BE;
-  color: #FFFFFF;
+  background-color: #94a6be;
+  color: #ffffff;
 }
 
 .calendar__cell._current {
@@ -389,13 +391,13 @@ export default {
 }
 
 ._cell-day:hover {
-  color: #94A6BE;
-  background-color: #EAEEF6;
+  color: #94a6be;
+  background-color: #eaeef6;
 }
 
 ._active-day {
-  background-color: #94A6BE;
-  color: #FFFFFF;
+  background-color: #94a6be;
+  color: #ffffff;
 }
 
 .nav__actions {
@@ -414,36 +416,37 @@ export default {
 }
 
 .nav__action svg {
-  fill: #94A6BE;
+  fill: #94a6be;
 }
 
 ._btn-bor a {
-  color: #565EEF;
+  color: #565eef;
 }
 
 ._btn-bg a {
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 ._btn-bor {
   border-radius: 4px;
-  border: 0.7px solid var(--palette-navy-60, #565EEF);
+  border: 0.7px solid var(--palette-navy-60, #565eef);
   outline: none;
   background: transparent;
-  color: #565EEF;
-} 
+  color: #565eef;
+}
 
 ._hide {
   display: none !important;
 }
 
 @media screen and (max-width: 660px) {
-
   .calendar {
-      max-width: 340px;
-      width: 100%;
-    }
-  .calendar__ttl, .calendar__nav, .calendar__period {
+    max-width: 340px;
+    width: 100%;
+  }
+  .calendar__ttl,
+  .calendar__nav,
+  .calendar__period {
     padding: 0;
   }
   .calendar .date-create {
@@ -485,7 +488,6 @@ export default {
 }
 
 @media screen and (max-width: 495px) {
-
   .pop-browse__block {
     padding: 20px 16px 32px;
   }
@@ -502,14 +504,17 @@ export default {
   .pop-browse__calendar {
     width: 100%;
   }
-  .pop-browse__btn-browse button, .pop-browse__btn-edit button {
+  .pop-browse__btn-browse button,
+  .pop-browse__btn-edit button {
     width: 100%;
     height: 40px;
   }
-  .pop-browse__btn-browse .btn-group, .pop-browse__btn-edit .btn-group {
+  .pop-browse__btn-browse .btn-group,
+  .pop-browse__btn-edit .btn-group {
     width: 100%;
   }
-  .pop-browse__btn-browse .btn-group button, .pop-browse__btn-edit .btn-group button {
+  .pop-browse__btn-browse .btn-group button,
+  .pop-browse__btn-edit .btn-group button {
     margin-right: 0px;
   }
   .form-browse__area {
