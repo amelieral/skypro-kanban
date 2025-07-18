@@ -76,6 +76,13 @@ export default {
 .header__btn-main-new a {
   color: #FFFFFF;
 }
+._hover03:hover {
+  background-color: #33399b;
+  color: #FFFFFF;
+}
+._hover03:hover a {
+  color: #FFFFFF;
+}
 .header__user {
   height: 20px;
   display: flex;
