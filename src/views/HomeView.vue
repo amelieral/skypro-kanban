@@ -23,7 +23,7 @@
     </main>
 
     <TaskModal />
-    <NewCardModal ref="newCardModal" />
+    <PopNewCard ref="PopNewCard" />
     <ExitModal />
   </div>
 </template>
@@ -34,34 +34,29 @@ import { tasks } from '@/mocks/tasks';
 import BaseHeader from '@/components/BaseHeader.vue';
 import TaskDesk from '@/components/TaskDesk.vue';
 import TaskModal from '@/components/TaskModal.vue';
-import NewCardModal from '@/components/NewCardModal.vue';
+import PopNewCard from '@/components/PopNewCard.vue';
 import ExitModal from '@/components/ExitModal.vue';
-
 export default {
   name: 'HomeView',
   components: {
     BaseHeader,
     TaskDesk,
     TaskModal,
-    NewCardModal,
+    PopNewCard,
     ExitModal
   },
-
   setup() {
     const isLoading = ref(true);
     const columns = ref([]);
     const newCardModal = ref(null);
-
     const hasTasks = computed(() => {
       return columns.value.some(column => column.tasks?.length > 0);
     });
-
     const openNewCardModal = () => {
       if (newCardModal.value) {
         newCardModal.value.open();
       }
     };
-
     onMounted(() => {
       setTimeout(() => {
         columns.value = [
@@ -94,7 +89,6 @@ export default {
         isLoading.value = false;
       }, 2000); 
     });
-
     return {
       isLoading,
       columns,
@@ -113,14 +107,7 @@ export default {
   align-items: center;
   height: 200px;
   font-size: 24px;
-  color: #94A6BE;
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 10px;
-  margin: 20px 0;
-}
-
-.loading p {
-  animation: pulse 1.5s infinite;
+  color: #94a6be;
 }
 
 .no-tasks {
@@ -134,47 +121,32 @@ export default {
 .no-tasks__content {
   text-align: center;
   max-width: 400px;
-  margin: 0 auto;
-}
-
-.no-tasks__icon {
-  width: 80px;
-  height: 80px;
-  opacity: 0.6;
-  margin-bottom: 20px;
 }
 
 .no-tasks__title {
   font-size: 24px;
-  color: #000;
   margin-bottom: 10px;
 }
 
 .no-tasks__text {
-  color: #94A6BE;
+  color: #94a6be;
   font-size: 16px;
   margin-bottom: 20px;
 }
 
-.no-tasks__button {
-  background-color: #565EEF;
+.create-task-btn {
+  background-color: #565eef;
+  color: white;
   border: none;
   border-radius: 4px;
-  color: white;
   padding: 12px 24px;
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
-.no-tasks__button:hover {
+.create-task-btn:hover {
   background-color: #33399b;
-}
-
-@keyframes pulse {
-  0% { opacity: 0.6; }
-  50% { opacity: 1; }
-  100% { opacity: 0.6; }
 }
 
 @keyframes fadeIn {
@@ -188,4 +160,3 @@ export default {
   }
 }
 </style>
-
