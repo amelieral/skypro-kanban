@@ -10,7 +10,7 @@
         </div>
         <nav class="header__nav">
           <button class="header__btn-main-new _hover01" id="btnMainNew">
-            <a href="#popNewCard">Создать новую задачу</a>
+            <router-link to="/new-card">Создать новую задачу</router-link>
           </button>
           <a href="#user-set-target" class="header__user _hover02">Ivan Ivanov</a>
           <div class="header__pop-user-set pop-user-set" id="user-set-target">
@@ -20,7 +20,7 @@
               <p>Темная тема</p>
               <input type="checkbox" class="checkbox" name="checkbox">
             </div>
-            <button type="button" class="_hover03"><a href="#popExit">Выйти</a></button>
+            <!-- <button @click="$router.push('/logout')">Выйти</button> -->
           </div>
         </nav>          
       </div>

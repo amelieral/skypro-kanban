@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <HomeView />
 </template>
 
@@ -16,4 +16,12 @@ export default {
 <style>
 @import '@/assets/main.css';
 @import '@/assets/css/main_dark.css';
-</style>
+</style> -->
+
+<script>
+import { RouterView } from 'vue-router';
+</script>
+
+<template>
+  <RouterView />
+</template>

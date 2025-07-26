@@ -1,7 +1,8 @@
 <template>
   <div class="wrapper">
     <BaseHeader />
-    
+    <RouterView />
+
     <main class="main">
       <div class="container">
         <div class="main__block">
@@ -21,21 +22,19 @@
         </div>
       </div>
     </main>
-
     <TaskModal />
     <PopNewCard ref="PopNewCard" />
-    <ExitModal />
   </div>
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue';
-import { tasks } from '@/mocks/tasks';
-import BaseHeader from '@/components/BaseHeader.vue';
-import TaskDesk from '@/components/TaskDesk.vue';
-import TaskModal from '@/components/TaskModal.vue';
-import PopNewCard from '@/components/PopNewCard.vue';
-import ExitModal from '@/components/ExitModal.vue';
+import { ref, computed, onMounted } from 'vue'
+import { tasks } from '@/mocks/tasks'
+import BaseHeader from '@/components/BaseHeader.vue'
+import TaskDesk from '@/components/TaskDesk.vue'
+import TaskModal from '@/components/TaskModal.vue'
+import PopNewCard from '@/components/PopNewCard.vue'
+
 export default {
   name: 'HomeView',
   components: {
@@ -43,60 +42,59 @@ export default {
     TaskDesk,
     TaskModal,
     PopNewCard,
-    ExitModal
   },
   setup() {
-    const isLoading = ref(true);
-    const columns = ref([]);
-    const newCardModal = ref(null);
+    const isLoading = ref(true)
+    const columns = ref([])
+    const newCardModal = ref(null)
     const hasTasks = computed(() => {
-      return columns.value.some(column => column.tasks?.length > 0);
-    });
+      return columns.value.some((column) => column.tasks?.length > 0)
+    })
     const openNewCardModal = () => {
       if (newCardModal.value) {
-        newCardModal.value.open();
+        newCardModal.value.open()
       }
-    };
+    }
     onMounted(() => {
       setTimeout(() => {
         columns.value = [
           {
             id: 1,
             title: 'Без статуса',
-            tasks: tasks.filter(task => task.status === 'Без статуса')
+            tasks: tasks.filter((task) => task.status === 'Без статуса'),
           },
           {
             id: 2,
             title: 'Нужно сделать',
-            tasks: tasks.filter(task => task.status === 'Нужно сделать')
+            tasks: tasks.filter((task) => task.status === 'Нужно сделать'),
           },
           {
             id: 3,
             title: 'В работе',
-            tasks: tasks.filter(task => task.status === 'В работе')
+            tasks: tasks.filter((task) => task.status === 'В работе'),
           },
           {
             id: 4,
             title: 'Тестирование',
-            tasks: tasks.filter(task => task.status === 'Тестирование')
+            tasks: tasks.filter((task) => task.status === 'Тестирование'),
           },
           {
             id: 5,
             title: 'Готово',
-            tasks: tasks.filter(task => task.status === 'Готово')
-          }
-        ];
-        isLoading.value = false;
-      }, 2000); 
-    });
+            tasks: tasks.filter((task) => task.status === 'Готово'),
+          },
+        ]
+        isLoading.value = false
+      }, 2000)
+    })
     return {
       isLoading,
       columns,
       hasTasks,
       newCardModal,
-      openNewCardModal
-    };
-  }
+      openNewCardModal,
+    }
+  },
 }
 </script>
 
