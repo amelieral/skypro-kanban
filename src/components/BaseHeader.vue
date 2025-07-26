@@ -27,7 +27,6 @@
     </div>            
   </header>
 </template>
-
 <script>
 export default {
   name: 'BaseHeader'
@@ -36,18 +35,11 @@ export default {
 
 <style scoped>
 
-.pop-wrap {
-  position: relative;
-  top: 0;
-  left: 0;
-}
-
 .header {
   width: 100%;
   margin: 0 auto;
   background-color: #FFFFFF;
 }
-
 .header__block {
   height: 70px;
   display: flex;
@@ -59,11 +51,9 @@ export default {
   left: 0;
   padding: 0 10px;
 }
-
 .header__logo img {
   width: 85px;
 }
-
 .header__nav {
   max-width: 290px;
   padding: 0;
@@ -71,7 +61,6 @@ export default {
   align-items: center;
   justify-content: center;
 }
-
 .header__btn-main-new {
   width: 178px;
   height: 30px;
@@ -84,11 +73,16 @@ export default {
   font-weight: 500;
   margin-right: 20px;
 }
-
 .header__btn-main-new a {
   color: #FFFFFF;
 }
-
+._hover03:hover {
+  background-color: #33399b;
+  color: #FFFFFF;
+}
+._hover03:hover a {
+  color: #FFFFFF;
+}
 .header__user {
   height: 20px;
   display: flex;
@@ -99,7 +93,6 @@ export default {
   line-height: 20px;
   color: #565EEF;
 }
-
 .header__user::after {
   content: "";
   display: block;
@@ -112,7 +105,6 @@ export default {
   margin: -6px 0 0 5px;
   padding: 0;
 }
-
 .header__pop-user-set {
   display: none;
   position: absolute;
@@ -137,7 +129,6 @@ export default {
   letter-spacing: -0.14px;
   margin-bottom: 4px;
 }
-
 .pop-user-set__mail {
   color: #94A6BE;
   font-size: 14px;
@@ -145,21 +136,18 @@ export default {
   letter-spacing: -0.14px;
   margin-bottom: 10px;
 }
-
 .pop-user-set__theme {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 30px;
 }
-
 .pop-user-set__theme p {
   color: #000;
   font-size: 14px;
   line-height: 21px;
   letter-spacing: -0.14px;
 }
-
 .pop-user-set__theme input[type=checkbox] {
   position: relative;
   width: 24px;
@@ -168,10 +156,9 @@ export default {
   background: #EAEEF6;
   outline: none;
   -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
+     -moz-appearance: none;
+          appearance: none;
 }
-
 .pop-user-set__theme input[type=checkbox]::before {
   content: "";
   position: absolute;
@@ -183,11 +170,9 @@ export default {
   background-color: #94A6BE;
   transition: 0.5s;
 }
-
 .pop-user-set__theme input:checked[type=checkbox]::before {
   left: 12px;
 }
-
 .pop-user-set button {
   width: 72px;
   height: 30px;
@@ -195,21 +180,9 @@ export default {
   color: #565EEF;
   border-radius: 4px;
   border: 1px solid #565EEF;
-  transition: all 0.3s ease;
 }
-
-.pop-user-set button:hover {
-  background-color: #565EEF;
-  color: #FFFFFF;
-}
-
-.pop-user-set button:hover a {
-  color: #FFFFFF;
-}
-
 .pop-user-set button a {
   color: #565EEF;
-  transition: all 0.3s ease;
 }
 
 @media screen and (max-width: 495px) {
