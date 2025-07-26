@@ -20,7 +20,7 @@
               <p>Темная тема</p>
               <input type="checkbox" class="checkbox" name="checkbox">
             </div>
-            <!-- <button @click="$router.push('/logout')">Выйти</button> -->
+            <button @click="$router.push('/logout')">Выйти</button>
           </div>
         </nav>          
       </div>
