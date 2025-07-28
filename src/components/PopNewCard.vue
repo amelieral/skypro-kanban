@@ -1,5 +1,5 @@
 <template>
-  <div class="pop-new-card" id="popNewCard">
+  <div class="pop-new-card">
     <div class="pop-new-card__container">
       <div class="pop-new-card__block">
         <div class="pop-new-card__content">
@@ -146,29 +146,30 @@ export default {
     getThemeClass(topic) {
       const themes = {
         'Web Design': '_orange',
-        'Research': '_green',
-        'Copywriting': '_purple'
+        Research: '_green',
+        Copywriting: '_purple',
       }
       return themes[topic] || '_gray'
     },
     closeModal() {
       this.$router.push('/')
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style scoped>
 .pop-new-card {
-  display: none;
-  width: 100%;
-  min-width: 375px;
-  height: 100%;
-  min-height: 100vh;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
-  z-index: 6;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
 }
 .pop-new-card__container {
   width: 100%;
@@ -182,7 +183,6 @@ export default {
   background: rgba(0, 0, 0, 0.4);
 }
 .pop-new-card__block {
-  display: block;
   margin: 0 auto;
   background-color: #ffffff;
   max-width: 630px;
@@ -193,7 +193,6 @@ export default {
   position: relative;
 }
 .pop-new-card__content {
-  display: block;
   text-align: left;
 }
 .pop-new-card__ttl {

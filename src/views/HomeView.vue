@@ -23,7 +23,6 @@
       </div>
     </main>
     <TaskModal />
-    <PopNewCard ref="PopNewCard" />
   </div>
 </template>
 
@@ -33,7 +32,6 @@ import { tasks } from '@/mocks/tasks'
 import BaseHeader from '@/components/BaseHeader.vue'
 import TaskDesk from '@/components/TaskDesk.vue'
 import TaskModal from '@/components/TaskModal.vue'
-import PopNewCard from '@/components/PopNewCard.vue'
 
 export default {
   name: 'HomeView',
@@ -41,20 +39,14 @@ export default {
     BaseHeader,
     TaskDesk,
     TaskModal,
-    PopNewCard,
   },
   setup() {
     const isLoading = ref(true)
     const columns = ref([])
-    const newCardModal = ref(null)
     const hasTasks = computed(() => {
       return columns.value.some((column) => column.tasks?.length > 0)
     })
-    const openNewCardModal = () => {
-      if (newCardModal.value) {
-        newCardModal.value.open()
-      }
-    }
+
     onMounted(() => {
       setTimeout(() => {
         columns.value = [
@@ -91,8 +83,6 @@ export default {
       isLoading,
       columns,
       hasTasks,
-      newCardModal,
-      openNewCardModal,
     }
   },
 }
