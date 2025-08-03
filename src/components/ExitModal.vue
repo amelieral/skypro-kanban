@@ -5,9 +5,13 @@
       <div class="pop-exit__block pop-exit__ttl">
         <h2 class="pop-exit__title">Выйти из аккаунта?</h2>
         <div class="pop-exit__form-group">
-          <router-link to="/login" class="pop-exit__exit-yes _hover01">
+          <a 
+            href="#" 
+            class="pop-exit__exit-yes _hover01"
+            @click.prevent="handleLogout"
+          >
             Да, выйти
-          </router-link>
+          </a>
           <router-link to="/" class="pop-exit__exit-no _hover03">
             Нет, остаться
           </router-link>
@@ -21,8 +25,19 @@
 export default {
   name: 'ExitModal',
   methods: {
-    logout() {
-      localStorage.removeItem('authToken')
+    handleLogout() {
+      localStorage.removeItem('userInfo')
+      
+      this.$router.push('/login')
+      
+      if (this.$root.setAuthState) {
+        this.$root.setAuthState(false)
+      }
+    }
+  },
+  mounted() {
+    if (!localStorage.getItem('userInfo')) {
+      this.$router.push('/login')
     }
   }
 }

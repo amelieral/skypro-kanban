@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import NotFoundView from '@/views/NotFoundView.vue'
 import HomeView from '@/views/HomeView.vue'
 import SignInView from '@/views/SignInView.vue'
 import SignUpView from '@/views/SignUpView.vue'
@@ -29,12 +30,15 @@ const router = createRouter({
           component: () => import('@/views/LogoutView.vue'),
         },
       ],
+      meta: {
+        requiresAuth: true,
+      },
     },
     {
       path: '/login',
       name: 'login',
       component: SignInView,
-      meta: { hideHeader: true },
+      meta: { requiresAuth: false },
     },
     {
       path: '/signup',
@@ -42,7 +46,21 @@ const router = createRouter({
       component: SignUpView,
       meta: { hideHeader: true },
     },
+    {
+      path: '/:pathMatch(.*)*',
+      component: NotFoundView,
+    },
   ],
+})
+
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('userInfo')
+
+  if (to.meta.requiresAuth && !token) {
+    next('/login')
+  } else {
+    next()
+  }
 })
 
 export default router

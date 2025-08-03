@@ -146,12 +146,12 @@
                 <a href="#">Удалить задачу</a>
               </button>
             </div>
-            <button class="btn-browse__close _btn-bg _hover01"><a href="#">Закрыть</a></button>
+            <button class="btn-browse__close _btn-bg _hover01" @click="closeModal">Закрыть</button>
           </div>
           <div class="pop-browse__btn-edit _hide">
             <div class="btn-group">
               <button class="btn-edit__edit _btn-bg _hover01"><a href="#">Сохранить</a></button>
-              <button class="btn-edit__edit _btn-bor _hover03"><a href="#">Отменить</a></button>
+              <button class="btn-edit__edit _btn-bor _hover03" @click="closeModal">Отменить</button>
               <button class="btn-edit__delete _btn-bor _hover03" id="btnDelete">
                 <a href="#">Удалить задачу</a>
               </button>
@@ -170,8 +170,11 @@ export default {
   props: {
     task: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
+  },
+  mounted() {
+    console.log('TaskModal received task:', this.task)
   },
   methods: {
     getThemeClass(topic) {
@@ -183,13 +186,25 @@ export default {
       return themes[topic] || '_gray'
     },
     closeModal() {
-      this.$router.push('/') 
+      this.$router.push('/')
     },
   },
 }
 </script>
 
 <style scoped>
+.pop-browse {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 375px;
+  min-height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 7;
+}
+
 .pop-browse__content {
   display: block;
   text-align: left;

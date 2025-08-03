@@ -6,20 +6,18 @@
           <div class="modal__ttl">
             <h2>Вход</h2>
           </div>
-          <form class="modal__form-login" @submit.prevent="handleSubmit">
+          <form class="modal__form-login" @submit.prevent="handleSignIn">
             <input
               class="modal__input"
               type="email"
               v-model="email"
               placeholder="Эл. почта"
-              required
             />
             <input
               class="modal__input"
               type="password"
               v-model="password"
               placeholder="Пароль"
-              required
             />
             <button class="modal__btn-enter _hover01" type="submit">Войти</button>
             <div class="modal__form-group">
@@ -39,23 +37,30 @@ export default {
   data() {
     return {
       email: '',
-      password: '',
+      password: ''
     }
   },
   methods: {
-    handleSubmit() {
-      console.log('Данные для входа:', {
+    handleSignIn() {
+      localStorage.setItem('userInfo', JSON.stringify({
         email: this.email,
-        password: this.password,
-      })
-
+        loggedIn: true,
+        token: 'generated-token-' + Date.now()
+      }))
+      
       this.$router.push('/')
-    },
-  },
+    }
+  }
 }
 </script>
 
 <style scoped>
+.error-message {
+  color: #ff4444;
+  font-size: 14px;
+  margin-bottom: 15px;
+  text-align: center;
+}
 .container-signin {
   background-color: #eaeef6;
   display: block;

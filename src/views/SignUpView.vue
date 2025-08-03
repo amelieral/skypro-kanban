@@ -12,21 +12,18 @@
               type="text"
               v-model="firstName"
               placeholder="Имя"
-              required
             />
             <input
               class="modal__input"
               type="email"
               v-model="email"
               placeholder="Эл. почта"
-              required
             />
             <input
               class="modal__input"
               type="password"
               v-model="password"
               placeholder="Пароль"
-              required
             />
             <button class="modal__btn-enter _hover01" type="submit">Зарегистрироваться</button>
             <div class="modal__form-group">
