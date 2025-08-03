@@ -1,12 +1,19 @@
 <template>
   <div class="wrapper">
-    <div class="container-signin">
+    <div class="container-signup">
       <div class="modal">
         <div class="modal__block">
           <div class="modal__ttl">
-            <h2>Вход</h2>
+            <h2>Регистрация</h2>
           </div>
           <form class="modal__form-login" @submit.prevent="handleSubmit">
+            <input
+              class="modal__input"
+              type="text"
+              v-model="firstName"
+              placeholder="Имя"
+              required
+            />
             <input
               class="modal__input"
               type="email"
@@ -21,10 +28,9 @@
               placeholder="Пароль"
               required
             />
-            <button class="modal__btn-enter _hover01" type="submit">Войти</button>
+            <button class="modal__btn-enter _hover01" type="submit">Зарегистрироваться</button>
             <div class="modal__form-group">
-              <p>Нужно зарегистрироваться?</p>
-              <router-link to="/signup">Регистрируйтесь здесь</router-link>
+              <p>Уже есть аккаунт? <router-link to="/login">Войдите здесь</router-link></p>
             </div>
           </form>
         </div>
@@ -35,16 +41,18 @@
 
 <script>
 export default {
-  name: 'SignInView',
+  name: 'SignUpView',
   data() {
     return {
+      firstName: '',
       email: '',
       password: '',
     }
   },
   methods: {
     handleSubmit() {
-      console.log('Данные для входа:', {
+      console.log('Данные для регистрации:', {
+        firstName: this.firstName,
         email: this.email,
         password: this.password,
       })
@@ -56,7 +64,7 @@ export default {
 </script>
 
 <style scoped>
-.container-signin {
+.container-signup {
   background-color: #eaeef6;
   display: block;
   width: 100vw;
@@ -104,7 +112,7 @@ export default {
   align-items: center;
   justify-content: center;
 }
-.modal__form-login input:first-child {
+.modal__form-login input:not(:last-child) {
   margin-bottom: 7px;
 }
 .modal__input {

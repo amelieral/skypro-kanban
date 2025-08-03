@@ -1,5 +1,5 @@
 <template>
-  <div class="pop-browse" id="taskModal">
+  <div class="pop-browse">
     <div class="pop-browse__container">
       <div class="pop-browse__block">
         <div class="pop-browse__content">
@@ -167,6 +167,12 @@
 <script>
 export default {
   name: 'TaskModal',
+  props: {
+    task: {
+      type: Object,
+      required: true
+    }
+  },
   methods: {
     getThemeClass(topic) {
       const themes = {
@@ -175,6 +181,9 @@ export default {
         Copywriting: '_purple',
       }
       return themes[topic] || '_gray'
+    },
+    closeModal() {
+      this.$router.push('/') 
     },
   },
 }

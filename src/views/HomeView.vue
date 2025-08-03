@@ -17,12 +17,14 @@
                 <h3 class="no-tasks__title">Задач нет</h3>
                 <p class="no-tasks__text">Создайте первую задачу, чтобы начать работу</p>
               </div>
+              <router-view v-slot="{ Component }">
+                <component :is="Component" v-if="$route.meta.isModal" />
+              </router-view>
             </div>
           </template>
         </div>
       </div>
     </main>
-    <TaskModal />
   </div>
 </template>
 
@@ -31,14 +33,12 @@ import { ref, computed, onMounted } from 'vue'
 import { tasks } from '@/mocks/tasks'
 import BaseHeader from '@/components/BaseHeader.vue'
 import TaskDesk from '@/components/TaskDesk.vue'
-import TaskModal from '@/components/TaskModal.vue'
 
 export default {
   name: 'HomeView',
   components: {
     BaseHeader,
     TaskDesk,
-    TaskModal,
   },
   setup() {
     const isLoading = ref(true)

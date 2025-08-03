@@ -5,13 +5,13 @@
         <div :class="['card__theme', getThemeClass(task.topic)]">
           <p :class="getThemeClass(task.topic)">{{ task.topic }}</p>
         </div>
-        <a href="#taskModal">
+        <router-link :to="`/card/${task.id}`">
           <div class="card__btn">
             <div></div>
             <div></div>
             <div></div>
           </div>
-        </a>
+        </router-link>
       </div>
       <div class="card__content">
         <h3 class="card__title">{{ task.title }}</h3>
