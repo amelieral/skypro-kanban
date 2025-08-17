@@ -1,20 +1,21 @@
 <template>
-  <div class="pop-exit" id="popExit">
+  <div class="pop-exit">
     <div class="pop-exit__container">
-      <div class="pop-exit__block">
-        <div class="pop-exit__ttl">
-          <h2>Выйти из аккаунта?</h2>
+      <router-link to="/" class="pop-exit__overlay"></router-link>
+      <div class="pop-exit__block pop-exit__ttl">
+        <h2 class="pop-exit__title">Выйти из аккаунта?</h2>
+        <div class="pop-exit__form-group">
+          <a 
+            href="#" 
+            class="pop-exit__exit-yes _hover01"
+            @click.prevent="handleLogout"
+          >
+            Да, выйти
+          </a>
+          <router-link to="/" class="pop-exit__exit-no _hover03">
+            Нет, остаться
+          </router-link>
         </div>
-        <form class="pop-exit__form" id="formExit" action="#">
-          <div class="pop-exit__form-group">
-            <button class="pop-exit__exit-yes _hover01" id="exitYes">
-              <a href="#">Да, выйти</a>
-            </button>
-            <button class="pop-exit__exit-no _hover03" id="exitNo">
-              <a href="main.html">Нет, остаться</a>
-            </button>
-          </div>
-        </form>
       </div>
     </div>
   </div>
@@ -22,13 +23,29 @@
 
 <script>
 export default {
-  name: 'ExitModal'
+  name: 'ExitModal',
+  methods: {
+    handleLogout() {
+      localStorage.removeItem('userInfo')
+      
+      this.$router.push('/login')
+      
+      if (this.$root.setAuthState) {
+        this.$root.setAuthState(false)
+      }
+    }
+  },
+  mounted() {
+    if (!localStorage.getItem('userInfo')) {
+      this.$router.push('/login')
+    }
+  }
 }
 </script>
 
 <style scoped>
 .pop-exit {
-  display: none;
+  display: block;
   width: 100%;
   height: 100%;
   min-width: 320px;
@@ -38,7 +55,6 @@ export default {
   left: 0;
   z-index: 5;
 }
-
 .pop-exit__container {
   width: 100%;
   height: 100%;
@@ -50,7 +66,6 @@ export default {
   justify-content: center;
   background: rgba(0, 0, 0, 0.4);
 }
-
 .pop-exit__block {
   display: block;
   margin: 0 auto;
@@ -62,7 +77,6 @@ export default {
   border: 0.7px solid #D4DBE5;
   box-shadow: 0px 4px 67px -12px rgba(0, 0, 0, 0.13);
 }
-
 .pop-exit__ttl h2 {
   text-align: center;
   font-size: 20px;
@@ -71,7 +85,6 @@ export default {
   letter-spacing: -0.4px;
   margin-bottom: 20px;
 }
-
 .pop-exit__exit-yes {
   width: 153px;
   height: 30px;
@@ -89,7 +102,6 @@ export default {
   color: #FFFFFF;
   margin-right: 10px;
 }
-
 .pop-exit__exit-yes a {
   width: 100%;
   height: 100%;
@@ -98,7 +110,6 @@ export default {
   align-items: center;
   justify-content: center;
 }
-
 .pop-exit__exit-no {
   width: 153px;
   height: 30px;
@@ -115,7 +126,6 @@ export default {
   letter-spacing: -0.14px;
   color: #565EEF;
 }
-
 .pop-exit__exit-no a {
   width: 100%;
   height: 100%;
@@ -124,31 +134,26 @@ export default {
   align-items: center;
   justify-content: center;
 }
-
 .pop-exit__form-group {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-
 @media only screen and (max-width: 375px) {
   .pop-exit__block {
     padding: 50px 20px;
   }
-
   .pop-exit__exit-yes {
     width: 100%;
     height: 40px;
     margin-right: 0;
     margin-bottom: 10px;
   }
-
   .pop-exit__exit-no {
     width: 100%;
     height: 40px;
   }
-
   .pop-exit__form-group {
     display: block;
   }
