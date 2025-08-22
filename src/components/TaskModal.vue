@@ -165,6 +165,9 @@
 </template>
 
 <script>
+import { kanbanApi } from '@/services/api'
+
+
 export default {
   name: 'TaskModal',
   props: {
@@ -172,9 +175,6 @@ export default {
       type: Object,
       required: true,
     },
-  },
-  mounted() {
-    console.log('TaskModal received task:', this.task)
   },
   methods: {
     getThemeClass(topic) {
@@ -185,10 +185,24 @@ export default {
       }
       return themes[topic] || '_gray'
     },
+    async deleteTask() {
+      if (!confirm('Вы уверены, что хотите удалить задачу?')) return
+      
+      try {
+        await kanbanApi.deleteTask(this.task._id)
+        this.closeModal()
+      } catch (err) {
+        console.error('Ошибка удаления задачи:', err)
+        alert('Ошибка при удалении задачи: ' + err.message)
+      }
+    },
     closeModal() {
-      this.$router.push('/')
+      window.history.back()
     },
   },
+  mounted() {
+    console.log('TaskModal received task:', this.task)
+  }
 }
 </script>
 

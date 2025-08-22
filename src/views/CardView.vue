@@ -4,21 +4,38 @@
   </div>
 </template>
 
-<script setup>
-import TaskModal from '@/components/TaskModal.vue';
+<script>
+import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { computed } from 'vue'
-import { tasks } from '@/mocks/tasks'
+import { kanbanApi } from '@/services/api'
+import TaskModal from '@/components/TaskModal.vue'
 
-const route = useRoute()
+export default {
+  name: 'CardView',
+  components: {
+    TaskModal
+  },
+  setup() {
+    const route = useRoute()
+    const task = ref({})
 
-const task = computed(() => {
-  const taskId = Number(route.params.id); 
-  return tasks.find((t) => t.id === taskId) || {
-    id: 0,
-    title: 'Задача не найдена',
-    topic: '',
-    status: ''
-  };
-});
+    const loadTask = async () => {
+      try {
+        const response = await kanbanApi.getTaskById(route.params.id)
+        task.value = response.task
+      } catch (err) {
+        console.error('Ошибка загрузки задачи:', err)
+        alert('Ошибка загрузки задачи: ' + err.message)
+      }
+    }
+
+    onMounted(() => {
+      loadTask()
+    })
+
+    return {
+      task
+    }
+  }
+}
 </script>

@@ -9,17 +9,26 @@
           <form class="modal__form-login" @submit.prevent="handleSignIn">
             <input
               class="modal__input"
-              type="email"
-              v-model="email"
-              placeholder="Эл. почта"
+              type="text"
+              v-model="login"
+              placeholder="Логин"
+              required
             />
             <input
               class="modal__input"
               type="password"
               v-model="password"
               placeholder="Пароль"
+              required
             />
-            <button class="modal__btn-enter _hover01" type="submit">Войти</button>
+            <button class="modal__btn-enter _hover01" type="submit" :disabled="isLoading">
+              {{ isLoading ? 'Вход...' : 'Войти' }}
+            </button>
+            
+            <div v-if="error" class="error-message">
+              {{ error }}
+            </div>
+
             <div class="modal__form-group">
               <p>Нужно зарегистрироваться?</p>
               <router-link to="/signup">Регистрируйтесь здесь</router-link>
@@ -32,23 +41,32 @@
 </template>
 
 <script>
+import { authService } from '@/services/auth'
+
 export default {
   name: 'SignInView',
   data() {
     return {
-      email: '',
-      password: ''
+      login: '',
+      password: '',
+      isLoading: false,
+      error: ''
     }
   },
   methods: {
-    handleSignIn() {
-      localStorage.setItem('userInfo', JSON.stringify({
-        email: this.email,
-        loggedIn: true,
-        token: 'generated-token-' + Date.now()
-      }))
-      
-      this.$router.push('/')
+    async handleSignIn() {
+      this.isLoading = true
+      this.error = ''
+
+      try {
+        await authService.login(this.login, this.password)
+        this.$router.push('/')
+      } catch (err) {
+        this.error = err.message || 'Ошибка входа'
+        console.error('Ошибка авторизации:', err)
+      } finally {
+        this.isLoading = false
+      }
     }
   }
 }

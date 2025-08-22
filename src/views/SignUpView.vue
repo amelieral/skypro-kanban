@@ -10,22 +10,32 @@
             <input
               class="modal__input"
               type="text"
-              v-model="firstName"
+              v-model="name"
               placeholder="Имя"
+              required
             />
             <input
               class="modal__input"
-              type="email"
-              v-model="email"
-              placeholder="Эл. почта"
+              type="text"
+              v-model="login"
+              placeholder="Логин"
+              required
             />
             <input
               class="modal__input"
               type="password"
               v-model="password"
               placeholder="Пароль"
+              required
             />
-            <button class="modal__btn-enter _hover01" type="submit">Зарегистрироваться</button>
+            <button class="modal__btn-enter _hover01" type="submit" :disabled="isLoading">
+              {{ isLoading ? 'Регистрация...' : 'Зарегистрироваться' }}
+            </button>
+            
+            <div v-if="error" class="error-message">
+              {{ error }}
+            </div>
+
             <div class="modal__form-group">
               <p>Уже есть аккаунт? <router-link to="/login">Войдите здесь</router-link></p>
             </div>
@@ -37,26 +47,35 @@
 </template>
 
 <script>
+import { authService } from '@/services/auth'
+
 export default {
   name: 'SignUpView',
   data() {
     return {
-      firstName: '',
-      email: '',
+      name: '',
+      login: '',
       password: '',
+      isLoading: false,
+      error: ''
     }
   },
   methods: {
-    handleSubmit() {
-      console.log('Данные для регистрации:', {
-        firstName: this.firstName,
-        email: this.email,
-        password: this.password,
-      })
+    async handleSubmit() {
+      this.isLoading = true
+      this.error = ''
 
-      this.$router.push('/')
-    },
-  },
+      try {
+        await authService.register(this.login, this.name, this.password)
+        this.$router.push('/')
+      } catch (err) {
+        this.error = err.message || 'Ошибка регистрации'
+        console.error('Ошибка регистрации:', err)
+      } finally {
+        this.isLoading = false
+      }
+    }
+  }
 }
 </script>
 
