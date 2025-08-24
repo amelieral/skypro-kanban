@@ -28,6 +28,7 @@ const router = createRouter({
           path: 'exit',
           name: 'exit',
           component: () => import('@/views/LogoutView.vue'),
+          meta: { isModal: true },
         },
       ],
       meta: {

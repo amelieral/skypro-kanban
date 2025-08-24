@@ -1,72 +1,42 @@
-const AUTH_API_URL = 'https://wedev-api.sky.pro/api/user';
+import axios from 'axios'
 
-class AuthAPI {
-    async login(login, password) {
-        try {
-            const response = await fetch(`${AUTH_API_URL}/login`, {
-                method: 'POST',
-                body: JSON.stringify({
-                    login: login,
-                    password: password
-                })
-            });
+const API_URL = 'https://wedev-api.sky.pro/api/user'
 
-            if (!response.ok) {
-                throw new Error('Неверный логин или пароль');
-            }
-
-            return response.json();
-        } catch (error) {
-            if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-                throw new Error('Сервер авторизации недоступен. Проверьте интернет-соединение.');
-            }
-            throw error;
-        }
-    }
-
-    async register(login, name, password) {
-        try {
-            const response = await fetch(AUTH_API_URL, {
-                method: 'POST',
-                body: JSON.stringify({
-                    login: login,
-                    name: name,
-                    password: password
-                })
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.message || 'Пользователь с таким логином уже существует');
-            }
-
-            return response.json();
-        } catch (error) {
-            if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-                throw new Error('Сервер авторизации недоступен. Проверьте интернет-соединение.');
-            }
-            throw error;
-        }
-    }
-
-    async getUsers() {
-        try {
-            const response = await fetch(AUTH_API_URL, {
-                method: 'GET'
-            });
-
-            if (!response.ok) {
-                throw new Error('Ошибка загрузки пользователей');
-            }
-
-            return response.json();
-        } catch (error) {
-            if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-                throw new Error('Сервер недоступен. Проверьте интернет-соединение.');
-            }
-            throw error;
-        }
-    }
+export async function loginUser(login, password) {
+  try {
+    const response = await axios.post(
+      API_URL + '/login',
+      { login, password },
+      {
+        headers: { 'Content-Type': '' }, 
+      },
+    )
+    return response.data 
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Ошибка авторизации')
+  }
 }
 
-export const authApi = new AuthAPI();
+export async function registerUser(login, name, password) {
+  try {
+    const response = await axios.post(
+      API_URL,
+      { login, name, password },
+      {
+        headers: { 'Content-Type': '' },
+      },
+    )
+    return response.data 
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Ошибка регистрации')
+  }
+}
+
+export async function getUsers() {
+  try {
+    const response = await axios.get(API_URL)
+    return response.data
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Ошибка загрузки пользователей')
+  }
+}

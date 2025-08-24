@@ -1,64 +1,57 @@
-import { authApi } from './authApi';
-
-class AuthService {
-    async login(login, password) {
-        try {
-            const response = await authApi.login(login, password);
-            
-            const userInfo = {
-                token: response.user.token,
-                login: response.user.login,
-                name: response.user.name,
-                id: response.user.id,
-                loggedIn: true
-            };
-
-            localStorage.setItem('userInfo', JSON.stringify(userInfo));
-            return response;
-            
-        } catch (error) {
-            console.error('Ошибка входа:', error);
-            throw error;
-        }
-    }
-
-    async register(login, name, password) {
-        try {
-            const response = await authApi.register(login, name, password);
-            
-            return this.login(login, password);
-            
-        } catch (error) {
-            console.error('Ошибка регистрации:', error);
-            throw error;
-        }
-    }
-
-    logout() {
-        localStorage.removeItem('userInfo');
-    }
-
-    isAuthenticated() {
-        const userInfo = localStorage.getItem('userInfo');
-        return !!userInfo;
-    }
-
-    getToken() {
-        const userInfo = localStorage.getItem('userInfo');
-        if (userInfo) {
-            const userData = JSON.parse(userInfo);
-            return userData.token;
-        }
-        return null;
-    }
-
-    getUserInfo() {
-        const userInfo = localStorage.getItem('userInfo');
-        if (userInfo) {
-            return JSON.parse(userInfo);
-        }
-        return null;
-    }
+export const setAuthToken = (token) => {
+  localStorage.setItem('authToken', token)
 }
 
-export const authService = new AuthService();
+export const getAuthToken = () => {
+  return localStorage.getItem('authToken')
+}
+
+export const removeAuthToken = () => {
+  localStorage.removeItem('authToken')
+}
+
+export const isUserAuthenticated = () => {
+  const token = getAuthToken()
+  return !!token && token !== 'undefined' && token !== 'null' && token !== '[]'
+}
+
+export const setUserInfo = (userData) => {
+  localStorage.setItem('userInfo', JSON.stringify(userData))
+}
+
+export const getUserInfo = () => {
+  const userInfo = localStorage.getItem('userInfo')
+  return userInfo ? JSON.parse(userInfo) : null
+}
+
+export const removeUserInfo = () => {
+  localStorage.removeItem('userInfo')
+}
+
+export const clearAuthData = () => {
+  removeAuthToken()
+  removeUserInfo()
+}
+
+export const saveAuthData = (responseData) => {
+  if (responseData.user && responseData.user.token) {
+    setAuthToken(responseData.user.token)
+    setUserInfo(responseData.user)
+  }
+}
+
+export const getValidToken = () => {
+  const token = getAuthToken()
+  if (!isUserAuthenticated()) {
+    throw new Error('Требуется авторизация. Пожалуйста, войдите в систему.')
+  }
+  return token
+}
+
+export const checkAuthAndRedirect = (router) => {
+  if (!isUserAuthenticated()) {
+    router.push('/login')
+    return false
+  }
+  return true
+}

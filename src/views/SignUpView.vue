@@ -47,7 +47,8 @@
 </template>
 
 <script>
-import { authService } from '@/services/auth'
+import { registerUser } from '@/services/authApi'
+import { setAuthToken, setUserInfo } from '@/services/auth'
 
 export default {
   name: 'SignUpView',
@@ -66,11 +67,21 @@ export default {
       this.error = ''
 
       try {
-        await authService.register(this.login, this.name, this.password)
-        this.$router.push('/')
-      } catch (err) {
-        this.error = err.message || 'Ошибка регистрации'
-        console.error('Ошибка регистрации:', err)
+        const response = await registerUser(this.login, this.name, this.password)
+        console.log('Ответ сервера при регистрации:', response)
+
+        if (response.user && response.user.token) {
+          setAuthToken(response.user.token)
+          setUserInfo(response.user)
+          console.log('Токен сохранен:', response.user.token)
+          this.$router.push('/')
+        } else {
+          throw new Error('Токен не получен от сервера')
+        }
+
+      } catch (error) {
+        console.error('Ошибка регистрации:', error)
+        this.error = error.message || 'Ошибка регистрации'
       } finally {
         this.isLoading = false
       }

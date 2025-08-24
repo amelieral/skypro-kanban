@@ -1,44 +1,27 @@
 <template>
   <div class="wrapper">
     <BaseHeader />
-    <RouterView />
-
     <main class="main">
       <div class="container">
         <div class="main__block">
-          <div v-if="useMockData" class="demo-warning">
-            ⚠️ Сервер недоступен. Используются демонстрационные данные.
-          </div>
-
           <div v-if="isLoading" class="loading">
             <p>Данные загружаются...</p>
           </div>
-
-          <div v-else-if="error" class="error">
-            <p>Ошибка: {{ error }}</p>
-            <button @click="loadTasks" class="retry-btn">Попробовать снова</button>
-          </div>
-
-          <template v-else>
+          <div v-else>
             <TaskDesk v-if="hasTasks" :columns="columns" @task-updated="loadTasks" />
             <div v-else class="no-tasks">
               <div class="no-tasks__content">
                 <h3 class="no-tasks__title">Задач нет</h3>
                 <p class="no-tasks__text">Создайте первую задачу, чтобы начать работу</p>
-                <router-link to="/new-card" class="create-task-btn">Создать задачу</router-link>
+                <button class="create-task-btn _hover01" @click="openCreateModal">
+                  Создать задачу
+                </button>
               </div>
             </div>
-          </template>
-
-          <router-view v-slot="{ Component }">
-            <component
-              :is="Component"
-              v-if="$route.meta.isModal"
-              @task-created="loadTasks"
-              @task-updated="loadTasks"
-              @task-deleted="loadTasks"
-            />
-          </router-view>
+          </div>
+        </div>
+        <div v-if="$route.meta.isModal" class="modal-container">
+          <router-view />
         </div>
       </div>
     </main>
@@ -46,10 +29,10 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, watch } from 'vue'
-import { useRoute } from 'vue-router'
-import { kanbanApi } from '@/services/api'
-import { tasks as mockTasks } from '@/mocks/tasks' 
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { getValidToken, checkAuthAndRedirect } from '@/services/auth'
+import { fetchTasks } from '@/services/api'
 import BaseHeader from '@/components/BaseHeader.vue'
 import TaskDesk from '@/components/TaskDesk.vue'
 
@@ -60,79 +43,55 @@ export default {
     TaskDesk,
   },
   setup() {
-    const route = useRoute()
-    const isLoading = ref(false)
+    const router = useRouter()
+    const isLoading = ref(true)
+    const tasks = ref([])
     const error = ref('')
-    const columns = ref([])
-    const useMockData = ref(false)
 
-    const hasTasks = computed(() => columns.value.some(column => column.tasks?.length > 0))
+    if (!checkAuthAndRedirect(router)) {
+      return {
+        isLoading: ref(false),
+        hasTasks: computed(() => false),
+        columns: ref([]),
+      }
+    }
+
+    const columns = ref([
+      { id: 1, title: 'Без статуса', status: 'Без статуса', tasks: [] },
+      { id: 2, title: 'Нужно сделать', status: 'Нужно сделать', tasks: [] },
+      { id: 3, title: 'В работе', status: 'В работе', tasks: [] },
+      { id: 4, title: 'Тестирование', status: 'Тестирование', tasks: [] },
+      { id: 5, title: 'Готово', status: 'Готово', tasks: [] },
+    ])
+
+    const hasTasks = computed(() => {
+      return tasks.value.length > 0
+    })
 
     const loadTasks = async () => {
       isLoading.value = true
       error.value = ''
-
       try {
-        const response = await kanbanApi.getTasks()
-        const tasks = response.tasks || []
-        useMockData.value = false
-        processTasks(tasks)
+        const token = getValidToken()
+        tasks.value = await fetchTasks({ token })
+
+        columns.value.forEach((column) => {
+          column.tasks = tasks.value.filter((task) => task.status === column.status)
+        })
       } catch (err) {
         console.error('Ошибка загрузки задач:', err)
-
-        if (err.message.includes('соединения') || err.message.includes('Failed to fetch')) {
-          error.value = '' 
-          useMockData.value = true
-          processTasks(mockTasks)
-        } else {
-          error.value = err.message
+        error.value = err.message
+        if (err.message.includes('авторизация')) {
+          router.push('/login')
         }
       } finally {
         isLoading.value = false
       }
     }
 
-    const processTasks = (tasks) => {
-      const formattedTasks = tasks.map(task => ({
-        ...task,
-        _id: task._id || task.id,
-        id: task.id || task._id
-      }))
-      
-      columns.value = [
-        {
-          id: 1,
-          title: 'Без статуса',
-          tasks: formattedTasks.filter(task => task.status === 'Без статуса'),
-        },
-        {
-          id: 2,
-          title: 'Нужно сделать',
-          tasks: formattedTasks.filter(task => task.status === 'Нужно сделать'),
-        },
-        {
-          id: 3,
-          title: 'В работе',
-          tasks: formattedTasks.filter(task => task.status === 'В работе'),
-        },
-        {
-          id: 4,
-          title: 'Тестирование',
-          tasks: formattedTasks.filter(task => task.status === 'Тестирование'),
-        },
-        {
-          id: 5,
-          title: 'Готово',
-          tasks: formattedTasks.filter(task => task.status === 'Готово'),
-        },
-      ]
+    const openCreateModal = () => {
+      router.push('/?modal=create-task')
     }
-
-    watch(() => route.path, (newPath) => {
-      if (newPath === '/') {
-        loadTasks()
-      }
-    })
 
     onMounted(() => {
       loadTasks()
@@ -140,11 +99,11 @@ export default {
 
     return {
       isLoading,
-      error,
       columns,
       hasTasks,
+      error,
       loadTasks,
-      useMockData
+      openCreateModal,
     }
   },
 }

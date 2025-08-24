@@ -15,7 +15,6 @@
                   name="name"
                   id="formTitle"
                   placeholder="Введите название задачи..."
-                  ref="titleInput"
                 />
               </div>
               <div class="form-new__block">
@@ -140,7 +139,6 @@
 </template>
 
 <script>
-import { kanbanApi } from '@/services/api'
 
 export default {
   name: 'PopNewCard',
@@ -153,40 +151,10 @@ export default {
       }
       return themes[topic] || '_gray'
     },
-    async createTask() {
-      try {
-        const formData = {
-          title: document.getElementById('formTitle').value,
-          description: document.getElementById('textArea').value,
-          topic: this.getSelectedTopic(),
-          date: new Date().toISOString()
-        }
-
-        await kanbanApi.createTask(formData)
-        this.closeModal()
-      } catch (err) {
-        console.error('Ошибка создания задачи:', err)
-        alert('Ошибка при создании задачи: ' + err.message)
-      }
-    },
-
-    getSelectedTopic() {
-      const activeCategory = document.querySelector('.categories__theme._active-category')
-      return activeCategory ? activeCategory.querySelector('p').textContent : 'Research'
-    },
     closeModal() {
       this.$router.push('/')
-    },
   },
-  mounted() {
-    const createBtn = document.getElementById('btnCreate')
-    if (createBtn) {
-      createBtn.addEventListener('click', (e) => {
-        e.preventDefault()
-        this.createTask()
-      })
-    }
-  }
+},
 }
 </script>
 

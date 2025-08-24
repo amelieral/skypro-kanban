@@ -31,6 +31,8 @@
 </template>
 
 <script>
+import { clearAuthData } from '@/services/auth'
+
 export default {
   name: 'BaseHeader',
   data() {
@@ -45,6 +47,11 @@ export default {
     openLogout() {
       this.showUserMenu = false
       this.$router.push('/logout')
+    },
+    handleLogout() {
+      this.showUserMenu = false
+      clearAuthData()
+      this.$router.push('/login')
     },
   },
 }

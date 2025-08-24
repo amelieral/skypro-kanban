@@ -146,7 +146,7 @@
                 <a href="#">Удалить задачу</a>
               </button>
             </div>
-            <button class="btn-browse__close _btn-bg _hover01" @click="closeModal">Закрыть</button>
+            <button class="btn-browse__close _btn-bg _hover01" @click.prevent="closeModal">Закрыть</button>
           </div>
           <div class="pop-browse__btn-edit _hide">
             <div class="btn-group">
@@ -165,9 +165,6 @@
 </template>
 
 <script>
-import { kanbanApi } from '@/services/api'
-
-
 export default {
   name: 'TaskModal',
   props: {
@@ -176,33 +173,22 @@ export default {
       required: true,
     },
   },
-  methods: {
-    getThemeClass(topic) {
-      const themes = {
-        'Web Design': '_orange',
-        Research: '_green',
-        Copywriting: '_purple',
-      }
-      return themes[topic] || '_gray'
-    },
-    async deleteTask() {
-      if (!confirm('Вы уверены, что хотите удалить задачу?')) return
-      
-      try {
-        await kanbanApi.deleteTask(this.task._id)
-        this.closeModal()
-      } catch (err) {
-        console.error('Ошибка удаления задачи:', err)
-        alert('Ошибка при удалении задачи: ' + err.message)
-      }
-    },
-    closeModal() {
-      window.history.back()
-    },
-  },
   mounted() {
     console.log('TaskModal received task:', this.task)
-  }
+  },
+  methods: {
+    getThemeClass(topic) {
+        const themes = {
+          'Web Design': '_orange',
+          Research: '_green',
+          Copywriting: '_purple',
+        }
+        return themes[topic] || '_gray'
+    },
+    closeModal() {
+      this.$router.push('/')
+    },
+  },
 }
 </script>
 

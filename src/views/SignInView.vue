@@ -41,7 +41,8 @@
 </template>
 
 <script>
-import { authService } from '@/services/auth'
+import { loginUser } from '@/services/authApi'
+import { setAuthToken, setUserInfo } from '@/services/auth'
 
 export default {
   name: 'SignInView',
@@ -59,11 +60,21 @@ export default {
       this.error = ''
 
       try {
-        await authService.login(this.login, this.password)
-        this.$router.push('/')
-      } catch (err) {
-        this.error = err.message || 'Ошибка входа'
-        console.error('Ошибка авторизации:', err)
+        const response = await loginUser(this.login, this.password)
+        console.log('Ответ сервера при входе:', response)
+
+        if (response.user && response.user.token) {
+          setAuthToken(response.user.token)
+          setUserInfo(response.user)
+          console.log('Токен сохранен:', response.user.token)
+          this.$router.push('/')
+        } else {
+          throw new Error('Токен не получен от сервера')
+        }
+
+      } catch (error) {
+        console.error('Ошибка входа:', error)
+        this.error = error.message || 'Ошибка входа'
       } finally {
         this.isLoading = false
       }
