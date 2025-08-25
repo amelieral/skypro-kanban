@@ -25,7 +25,7 @@ export async function postTasks({ token, task }) {
       },
     })
     console.log('Ответ сервера:', data);
-return data.data;
+return data.data.tasks;
   } catch (error) {
     if (error.response?.status === 400) {
       throw new Error('Неверный формат данных')
@@ -58,7 +58,7 @@ export async function editTask({ token, id, task }) {
             'Content-Type': '',
          },
       })
-   return data.data
+   return data.data.tasks
    } catch (error) {
      throw new Error(error.response?.data?.error || error.message)
   }
