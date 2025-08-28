@@ -3,9 +3,9 @@
     <div class="cards__card card">
       <div class="card__group">
         <div :class="['card__theme', getThemeClass(task.topic)]">
-          <p :class="getThemeClass(task.topic)">{{ task.topic }}</p>
+          <p>{{ task.topic }}</p>
         </div>
-        <router-link :to="`/card/${task.id}`">
+        <router-link :to="`/card/${task._id}`">
           <div class="card__btn">
             <div></div>
             <div></div>

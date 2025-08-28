@@ -146,7 +146,7 @@
                 <a href="#">Удалить задачу</a>
               </button>
             </div>
-            <button class="btn-browse__close _btn-bg _hover01" @click="closeModal">Закрыть</button>
+            <button class="btn-browse__close _btn-bg _hover01" @click.prevent="closeModal">Закрыть</button>
           </div>
           <div class="pop-browse__btn-edit _hide">
             <div class="btn-group">
@@ -178,12 +178,12 @@ export default {
   },
   methods: {
     getThemeClass(topic) {
-      const themes = {
-        'Web Design': '_orange',
-        Research: '_green',
-        Copywriting: '_purple',
-      }
-      return themes[topic] || '_gray'
+        const themes = {
+          'Web Design': '_orange',
+          Research: '_green',
+          Copywriting: '_purple',
+        }
+        return themes[topic] || '_gray'
     },
     closeModal() {
       this.$router.push('/')

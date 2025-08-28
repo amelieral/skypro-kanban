@@ -5,16 +5,10 @@
       <div class="pop-exit__block pop-exit__ttl">
         <h2 class="pop-exit__title">Выйти из аккаунта?</h2>
         <div class="pop-exit__form-group">
-          <a 
-            href="#" 
-            class="pop-exit__exit-yes _hover01"
-            @click.prevent="handleLogout"
-          >
+          <a href="#" class="pop-exit__exit-yes _hover01" @click.prevent="handleLogout">
             Да, выйти
           </a>
-          <router-link to="/" class="pop-exit__exit-no _hover03">
-            Нет, остаться
-          </router-link>
+          <router-link to="/" class="pop-exit__exit-no _hover03"> Нет, остаться </router-link>
         </div>
       </div>
     </div>
@@ -22,24 +16,22 @@
 </template>
 
 <script>
+import { clearAuthData } from '@/services/auth.js'
+
 export default {
   name: 'ExitModal',
   methods: {
     handleLogout() {
-      localStorage.removeItem('userInfo')
-      
+      clearAuthData()
       this.$router.push('/login')
-      
+
       if (this.$root.setAuthState) {
         this.$root.setAuthState(false)
       }
-    }
+
+      window.location.reload()
+    },
   },
-  mounted() {
-    if (!localStorage.getItem('userInfo')) {
-      this.$router.push('/login')
-    }
-  }
 }
 </script>
 
@@ -69,12 +61,12 @@ export default {
 .pop-exit__block {
   display: block;
   margin: 0 auto;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   max-width: 370px;
   width: 100%;
   padding: 50px 60px;
   border-radius: 10px;
-  border: 0.7px solid #D4DBE5;
+  border: 0.7px solid #d4dbe5;
   box-shadow: 0px 4px 67px -12px rgba(0, 0, 0, 0.13);
 }
 .pop-exit__ttl h2 {
@@ -88,7 +80,7 @@ export default {
 .pop-exit__exit-yes {
   width: 153px;
   height: 30px;
-  background-color: #565EEF;
+  background-color: #565eef;
   border-radius: 4px;
   border: none;
   outline: none;
@@ -99,13 +91,13 @@ export default {
   line-height: 21px;
   font-weight: 500;
   letter-spacing: -0.14px;
-  color: #FFFFFF;
+  color: #ffffff;
   margin-right: 10px;
 }
 .pop-exit__exit-yes a {
   width: 100%;
   height: 100%;
-  color: #FFFFFF;
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -115,7 +107,7 @@ export default {
   height: 30px;
   background-color: transparent;
   border-radius: 4px;
-  border: 0.7px solid var(--palette-navy-60, #565EEF);
+  border: 0.7px solid var(--palette-navy-60, #565eef);
   outline: none;
   display: flex;
   align-items: center;
@@ -124,12 +116,12 @@ export default {
   line-height: 21px;
   font-weight: 500;
   letter-spacing: -0.14px;
-  color: #565EEF;
+  color: #565eef;
 }
 .pop-exit__exit-no a {
   width: 100%;
   height: 100%;
-  color: #565EEF;
+  color: #565eef;
   display: flex;
   align-items: center;
   justify-content: center;

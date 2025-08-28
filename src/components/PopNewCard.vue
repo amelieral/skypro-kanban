@@ -15,7 +15,6 @@
                   name="name"
                   id="formTitle"
                   placeholder="Введите название задачи..."
-                  autofocus
                 />
               </div>
               <div class="form-new__block">
@@ -140,6 +139,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'PopNewCard',
   methods: {
@@ -153,8 +153,8 @@ export default {
     },
     closeModal() {
       this.$router.push('/')
-    },
   },
+},
 }
 </script>
 
