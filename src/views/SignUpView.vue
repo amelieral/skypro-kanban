@@ -48,10 +48,10 @@
 
 <script>
 import { registerUser } from '@/services/authApi'
-import { setAuthToken, setUserInfo } from '@/services/auth'
 
 export default {
   name: 'SignUpView',
+  inject: ['auth'],
   data() {
     return {
       name: '',
@@ -71,14 +71,12 @@ export default {
         console.log('Ответ сервера при регистрации:', response)
 
         if (response.user && response.user.token) {
-          setAuthToken(response.user.token)
-          setUserInfo(response.user)
+          this.auth.setUserInfo(response.user) 
           console.log('Токен сохранен:', response.user.token)
           this.$router.push('/')
         } else {
           throw new Error('Токен не получен от сервера')
         }
-
       } catch (error) {
         console.error('Ошибка регистрации:', error)
         this.error = error.message || 'Ошибка регистрации'

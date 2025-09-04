@@ -10,15 +10,20 @@
 </template>
 
 <script>
-import TaskColumn from './TaskColumn.vue';
+import { inject } from 'vue'
+import TaskColumn from '@/components/TaskColumn.vue' 
 
 export default {
   name: 'TaskDesk',
-  components: { TaskColumn },
-  props: {
-    columns: {
-      type: Array,
-      required: true
+  components: { TaskColumn }, 
+  inject: ['tasksData'],
+  setup() {
+    const { columns, loading, error } = inject('tasksData')
+
+    return {
+      columns,
+      loading,
+      error
     }
   }
 }

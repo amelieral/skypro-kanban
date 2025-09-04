@@ -4,11 +4,11 @@
     <main class="main">
       <div class="container">
         <div class="main__block">
-          <div v-if="isLoading" class="loading">
+          <div v-if="loading" class="loading">
             <p>Данные загружаются...</p>
           </div>
           <div v-else>
-            <TaskDesk v-if="hasTasks" :columns="columns" @task-updated="loadTasks" />
+            <TaskDesk v-if="hasTasks" />
             <div v-else class="no-tasks">
               <div class="no-tasks__content">
                 <h3 class="no-tasks__title">Задач нет</h3>
@@ -29,9 +29,8 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, provide, inject } from 'vue' 
 import { useRouter } from 'vue-router'
-import { getValidToken, checkAuthAndRedirect } from '@/services/auth'
 import { fetchTasks } from '@/services/api'
 import BaseHeader from '@/components/BaseHeader.vue'
 import TaskDesk from '@/components/TaskDesk.vue'
@@ -44,17 +43,10 @@ export default {
   },
   setup() {
     const router = useRouter()
-    const isLoading = ref(true)
+    const auth = inject('auth')
+    const loading = ref(true)
     const tasks = ref([])
     const error = ref('')
-
-    if (!checkAuthAndRedirect(router)) {
-      return {
-        isLoading: ref(false),
-        hasTasks: computed(() => false),
-        columns: ref([]),
-      }
-    }
 
     const columns = ref([
       { id: 1, title: 'Без статуса', status: 'Без статуса', tasks: [] },
@@ -64,15 +56,13 @@ export default {
       { id: 5, title: 'Готово', status: 'Готово', tasks: [] },
     ])
 
-    const hasTasks = computed(() => {
-      return tasks.value.length > 0
-    })
+    const hasTasks = computed(() => tasks.value.length > 0)
 
     const loadTasks = async () => {
-      isLoading.value = true
+      loading.value = true
       error.value = ''
       try {
-        const token = getValidToken()
+        const token = auth.getToken()
         tasks.value = await fetchTasks({ token })
 
         columns.value.forEach((column) => {
@@ -82,27 +72,38 @@ export default {
         console.error('Ошибка загрузки задач:', err)
         error.value = err.message
         if (err.message.includes('авторизация')) {
+          auth.removeUser() 
           router.push('/login')
         }
       } finally {
-        isLoading.value = false
+        loading.value = false
       }
     }
 
+    provide('tasksData', {
+      tasks,
+      loading,
+      error,
+      columns,
+      refreshTasks: loadTasks,
+    })
+
     const openCreateModal = () => {
-      router.push('/?modal=create-task')
+      router.push('/new-card') 
     }
 
     onMounted(() => {
+      if (!auth.isAuthenticated()) {
+        router.push('/login')
+        return
+      }
       loadTasks()
     })
 
     return {
-      isLoading,
-      columns,
+      loading,
       hasTasks,
       error,
-      loadTasks,
       openCreateModal,
     }
   },

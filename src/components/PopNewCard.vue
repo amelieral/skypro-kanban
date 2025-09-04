@@ -139,22 +139,49 @@
 </template>
 
 <script>
+import { inject } from 'vue'
+import { useRouter } from 'vue-router'
+import { postTasks } from '@/services/api'
 
 export default {
   name: 'PopNewCard',
+  inject: ['auth', 'tasksData'], 
+  setup() {
+    const router = useRouter()
+    const auth = inject('auth')
+    const tasksData = inject('tasksData')
+    return { router, auth, tasksData }
+  },
   methods: {
-    getThemeClass(topic) {
-      const themes = {
-        'Web Design': '_orange',
-        Research: '_green',
-        Copywriting: '_purple',
-      }
-      return themes[topic] || '_gray'
-    },
     closeModal() {
       this.$router.push('/')
-  },
-},
+    },
+    async createTask() {
+      this.isLoading = true
+      this.error = ''
+
+      try {
+        const token = this.auth.getToken()
+        const taskData = {
+          title: this.title,
+          description: this.description,
+          topic: this.selectedTopic,
+          date: this.selectedDate,
+          status: 'Без статуса'
+        }
+
+        await postTasks({ token, task: taskData })
+        this.closeModal()
+
+        this.tasksData.refreshTasks()
+      } catch (error) {
+        console.error('Ошибка создания задачи:', error)
+        this.error = error.message || 'Ошибка создания задачи'
+      } finally {
+        this.isLoading = false
+      }
+    }
+  }
 }
 </script>
 

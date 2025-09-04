@@ -3,49 +3,56 @@ import NotFoundView from '@/views/NotFoundView.vue'
 import HomeView from '@/views/HomeView.vue'
 import SignInView from '@/views/SignInView.vue'
 import SignUpView from '@/views/SignUpView.vue'
+import AppLayout from '@/layout/AppLayout.vue' 
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView,
+      component: AppLayout,
       children: [
         {
-          path: 'new-card',
-          name: 'new-card',
-          component: () => import('@/views/NewCardView.vue'),
-          meta: { isModal: true },
+          path: '',
+          name: 'home',
+          component: HomeView,
+          children: [
+            {
+              path: 'new-card',
+              name: 'new-card',
+              component: () => import('@/views/NewCardView.vue'),
+              meta: { isModal: true },
+            },
+            {
+              path: 'card/:id',
+              name: 'card',
+              component: () => import('@/views/CardView.vue'),
+              meta: { isModal: true },
+            },
+            {
+              path: 'exit',
+              name: 'exit',
+              component: () => import('@/views/LogoutView.vue'),
+              meta: { isModal: true },
+            },
+          ],
+          meta: {
+            requiresAuth: true,
+          },
         },
         {
-          path: 'card/:id',
-          name: 'card',
-          component: () => import('@/views/CardView.vue'),
-          meta: { isModal: true },
+          path: 'login',
+          name: 'login',
+          component: SignInView,
+          meta: { requiresAuth: false },
         },
         {
-          path: 'exit',
-          name: 'exit',
-          component: () => import('@/views/LogoutView.vue'),
-          meta: { isModal: true },
+          path: 'signup',
+          name: 'signup',
+          component: SignUpView,
+          meta: { requiresAuth: false },
         },
-      ],
-      meta: {
-        requiresAuth: true,
-      },
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: SignInView,
-      meta: { requiresAuth: false },
-    },
-    {
-      path: '/signup',
-      name: 'signup',
-      component: SignUpView,
-      meta: { hideHeader: true },
+      ]
     },
     {
       path: '/:pathMatch(.*)*',
@@ -55,10 +62,12 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('userInfo')
-
+  const token = localStorage.getItem('authToken') || localStorage.getItem('userInfo')
+  
   if (to.meta.requiresAuth && !token) {
     next('/login')
+  } else if ((to.name === 'login' || to.name === 'signup') && token) {
+    next('/') 
   } else {
     next()
   }
