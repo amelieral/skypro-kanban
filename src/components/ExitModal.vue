@@ -16,22 +16,23 @@
 </template>
 
 <script>
-import { clearAuthData } from '@/services/auth.js'
-
 export default {
   name: 'ExitModal',
+  inject: ['auth'],
   methods: {
-    handleLogout() {
-      clearAuthData()
-      this.$router.push('/login')
-
-      if (this.$root.setAuthState) {
-        this.$root.setAuthState(false)
+    async handleLogout() {
+      try {
+        this.auth.removeUser()
+        
+        setTimeout(() => {
+          this.$router.push('/login')
+        }, 100)
+        
+      } catch (error) {
+        console.error('Ошибка выхода:', error)
       }
-
-      window.location.reload()
-    },
-  },
+    }
+  }
 }
 </script>
 

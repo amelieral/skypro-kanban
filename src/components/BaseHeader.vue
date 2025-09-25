@@ -35,6 +35,7 @@ import { clearAuthData } from '@/services/auth'
 
 export default {
   name: 'BaseHeader',
+  inject: ['auth'],
   data() {
     return {
       showUserMenu: false,
@@ -44,12 +45,9 @@ export default {
     toggleUserMenu() {
       this.showUserMenu = !this.showUserMenu
     },
-    openLogout() {
-      this.showUserMenu = false
-      this.$router.push('/logout')
-    },
     handleLogout() {
       this.showUserMenu = false
+      this.auth.removeUser() 
       clearAuthData()
       this.$router.push('/login')
     },

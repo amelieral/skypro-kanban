@@ -42,10 +42,10 @@
 
 <script>
 import { loginUser } from '@/services/authApi'
-import { setAuthToken, setUserInfo } from '@/services/auth'
 
 export default {
   name: 'SignInView',
+  inject: ['auth'],
   data() {
     return {
       login: '',
@@ -64,14 +64,12 @@ export default {
         console.log('Ответ сервера при входе:', response)
 
         if (response.user && response.user.token) {
-          setAuthToken(response.user.token)
-          setUserInfo(response.user)
+          this.auth.setUserInfo(response.user) 
           console.log('Токен сохранен:', response.user.token)
           this.$router.push('/')
         } else {
           throw new Error('Токен не получен от сервера')
         }
-
       } catch (error) {
         console.error('Ошибка входа:', error)
         this.error = error.message || 'Ошибка входа'
