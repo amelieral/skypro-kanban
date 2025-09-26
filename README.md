@@ -1,6 +1,9 @@
-# .
+#Kanban
 
-This template should help get you started developing with Vue 3 in Vite.
++ интегрирована верстка задач с API
++ реализовано добавление новых задач, их редактирование и удаление
++ реализована авторизация и регистрация пользователей
++ для навигации использован роутинг
 
 ## Recommended IDE Setup
 
