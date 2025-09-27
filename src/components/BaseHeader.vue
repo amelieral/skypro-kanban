@@ -98,7 +98,7 @@ export default {
   color: #ffffff;
 }
 ._hover03:hover {
-  background-color: #33399b;
+  background-color: #565eef;
   color: #ffffff;
 }
 ._hover03:hover a {

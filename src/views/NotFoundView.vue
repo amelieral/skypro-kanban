@@ -18,7 +18,7 @@
 <style scoped>
 .not-found {
   height: 100vh;
-  background: #0a192f;
+  background:#eaeef6;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -36,14 +36,14 @@
 .error-code {
   font-size: 15rem;
   margin: 0;
-  color: #64ffda;
-  text-shadow: 0 0 20px rgba(100, 255, 218, 0.4);
+  color:#565eef;
+  text-shadow: 0 0 20px rgba(148, 166, 190, 0.4);
   animation: float 3s ease-in-out infinite;
 }
 
 .error-message {
   margin: 2rem 0;
-  color: #ccd6f6;
+  color:  #94a6be;
 }
 
 .en {
@@ -61,7 +61,7 @@
 .home-button {
   display: inline-block;
   padding: 1rem 2rem;
-  background: linear-gradient(45deg, #64ffda, #00b4d8);
+  background: linear-gradient(45deg, #565eef, #94a6be);
   color: #0a192f;
   text-decoration: none;
   border-radius: 50px;
@@ -75,7 +75,7 @@
 
 .home-button:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(100, 255, 218, 0.3);
+  box-shadow: 0 10px 20px rgba(148, 166, 190, 0.4);
 }
 
 @keyframes float {
