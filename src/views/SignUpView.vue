@@ -7,20 +7,8 @@
             <h2>Регистрация</h2>
           </div>
           <form class="modal__form-login" @submit.prevent="handleSubmit">
-            <input
-              class="modal__input"
-              type="text"
-              v-model="name"
-              placeholder="Имя"
-              required
-            />
-            <input
-              class="modal__input"
-              type="text"
-              v-model="login"
-              placeholder="Логин"
-              required
-            />
+            <input class="modal__input" type="text" v-model="name" placeholder="Имя" required />
+            <input class="modal__input" type="text" v-model="login" placeholder="Логин" required />
             <input
               class="modal__input"
               type="password"
@@ -31,7 +19,7 @@
             <button class="modal__btn-enter _hover01" type="submit" :disabled="isLoading">
               {{ isLoading ? 'Регистрация...' : 'Зарегистрироваться' }}
             </button>
-            
+
             <div v-if="error" class="error-message">
               {{ error }}
             </div>
@@ -58,7 +46,7 @@ export default {
       login: '',
       password: '',
       isLoading: false,
-      error: ''
+      error: '',
     }
   },
   methods: {
@@ -71,7 +59,7 @@ export default {
         console.log('Ответ сервера при регистрации:', response)
 
         if (response.user && response.user.token) {
-          this.auth.setUserInfo(response.user) 
+          this.auth.setUserInfo(response.user)
           console.log('Токен сохранен:', response.user.token)
           this.$router.push('/')
         } else {
@@ -83,8 +71,8 @@ export default {
       } finally {
         this.isLoading = false
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -99,6 +87,10 @@ export default {
 
 ._hover01:hover {
   background-color: #33399b;
+}
+
+.error-message {
+  color: red;
 }
 
 .modal {

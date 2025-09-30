@@ -6,7 +6,11 @@
           <h3 class="pop-new-card__ttl">Создание задачи</h3>
           <a href="#" class="pop-new-card__close" @click.prevent="closeModal">&#10006;</a>
           <div class="pop-new-card__wrap">
-            <form class="pop-new-card__form form-new" id="formNewCard" action="#">
+            <form
+              class="pop-new-card__form form-new"
+              id="formNewCard"
+              @submit.prevent="handleCreateTask"
+            >
               <div class="form-new__block">
                 <label for="formTitle" class="subttl">Название задачи</label>
                 <input
@@ -14,7 +18,9 @@
                   type="text"
                   name="name"
                   id="formTitle"
+                  v-model="title"
                   placeholder="Введите название задачи..."
+                  required
                 />
               </div>
               <div class="form-new__block">
@@ -23,6 +29,7 @@
                   class="form-new__area"
                   name="text"
                   id="textArea"
+                  v-model="description"
                   placeholder="Введите описание задачи..."
                 ></textarea>
               </div>
@@ -31,9 +38,9 @@
               <p class="calendar__ttl subttl">Даты</p>
               <div class="calendar__block">
                 <div class="calendar__nav">
-                  <div class="calendar__month">Сентябрь 2023</div>
+                  <div class="calendar__month">{{ currentMonth }} {{ currentYear }}</div>
                   <div class="nav__actions">
-                    <div class="nav__action" data-action="prev">
+                    <div class="nav__action" @click="changeMonth(-1)">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="6"
@@ -45,7 +52,7 @@
                         />
                       </svg>
                     </div>
-                    <div class="nav__action" data-action="next">
+                    <div class="nav__action" @click="changeMonth(1)">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="6"
@@ -70,48 +77,30 @@
                     <div class="calendar__day-name -weekend-">вс</div>
                   </div>
                   <div class="calendar__cells">
-                    <div class="calendar__cell _other-month">28</div>
-                    <div class="calendar__cell _other-month">29</div>
-                    <div class="calendar__cell _other-month">30</div>
-                    <div class="calendar__cell _cell-day">31</div>
-                    <div class="calendar__cell _cell-day">1</div>
-                    <div class="calendar__cell _cell-day _weekend">2</div>
-                    <div class="calendar__cell _cell-day _weekend">3</div>
-                    <div class="calendar__cell _cell-day">4</div>
-                    <div class="calendar__cell _cell-day">5</div>
-                    <div class="calendar__cell _cell-day">6</div>
-                    <div class="calendar__cell _cell-day">7</div>
-                    <div class="calendar__cell _cell-day _current">8</div>
-                    <div class="calendar__cell _cell-day _weekend">9</div>
-                    <div class="calendar__cell _cell-day _weekend">10</div>
-                    <div class="calendar__cell _cell-day">11</div>
-                    <div class="calendar__cell _cell-day">12</div>
-                    <div class="calendar__cell _cell-day">13</div>
-                    <div class="calendar__cell _cell-day">14</div>
-                    <div class="calendar__cell _cell-day">15</div>
-                    <div class="calendar__cell _cell-day _weekend">16</div>
-                    <div class="calendar__cell _cell-day _weekend">17</div>
-                    <div class="calendar__cell _cell-day">18</div>
-                    <div class="calendar__cell _cell-day">19</div>
-                    <div class="calendar__cell _cell-day">20</div>
-                    <div class="calendar__cell _cell-day">21</div>
-                    <div class="calendar__cell _cell-day">22</div>
-                    <div class="calendar__cell _cell-day _weekend">23</div>
-                    <div class="calendar__cell _cell-day _weekend">24</div>
-                    <div class="calendar__cell _cell-day">25</div>
-                    <div class="calendar__cell _cell-day">26</div>
-                    <div class="calendar__cell _cell-day">27</div>
-                    <div class="calendar__cell _cell-day">28</div>
-                    <div class="calendar__cell _cell-day">29</div>
-                    <div class="calendar__cell _cell-day _weekend">30</div>
-                    <div class="calendar__cell _other-month _weekend">1</div>
+                    <div
+                      v-for="day in calendarDays"
+                      :key="day.id"
+                      class="calendar__cell"
+                      :class="{
+                        '_other-month': !day.isCurrentMonth,
+                        '_cell-day': day.isCurrentMonth,
+                        _weekend: day.isWeekend,
+                        _current: day.isToday,
+                        '_active-day': day.isSelected,
+                      }"
+                      @click="selectDate(day)"
+                    >
+                      {{ formatDayNumber(day.day) }}
+                    </div>
                   </div>
                 </div>
 
-                <input type="hidden" id="datepick_value" value="08.09.2023" />
+                <input type="hidden" id="datepick_value" :value="selectedDate" />
                 <div class="calendar__period">
                   <p class="calendar__p date-end">
-                    Выберите срок исполнения <span class="date-control"></span>.
+                    Выберите срок исполнения
+                    <span class="date-control">{{ formattedSelectedDate }}</span
+                    >.
                   </p>
                 </div>
               </div>
@@ -120,18 +109,42 @@
           <div class="pop-new-card__categories categories">
             <p class="categories__p subttl">Категория</p>
             <div class="categories__themes">
-              <div class="categories__theme _orange _active-category">
+              <div
+                class="categories__theme _orange"
+                :class="{ '_active-category': selectedTopic === 'Web Design' }"
+                @click="selectedTopic = 'Web Design'"
+              >
                 <p class="_orange">Web Design</p>
               </div>
-              <div class="categories__theme _green">
+              <div
+                class="categories__theme _green"
+                :class="{ '_active-category': selectedTopic === 'Research' }"
+                @click="selectedTopic = 'Research'"
+              >
                 <p class="_green">Research</p>
               </div>
-              <div class="categories__theme _purple">
+              <div
+                class="categories__theme _purple"
+                :class="{ '_active-category': selectedTopic === 'Copywriting' }"
+                @click="selectedTopic = 'Copywriting'"
+              >
                 <p class="_purple">Copywriting</p>
               </div>
             </div>
           </div>
-          <button class="form-new__create _hover01" id="btnCreate">Создать задачу</button>
+          <button
+            type="submit"
+            class="form-new__create _hover01"
+            id="btnCreate"
+            :disabled="isLoading"
+            @click="handleCreateTask"
+          >
+            {{ isLoading ? 'Создание...' : 'Создать задачу' }}
+          </button>
+
+          <div v-if="error" class="error-message" style="color: red; margin-top: 10px">
+            {{ error }}
+          </div>
         </div>
       </div>
     </div>
@@ -139,54 +152,231 @@
 </template>
 
 <script>
-import { inject } from 'vue'
+import { inject, ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { postTasks } from '@/services/api'
+import { getAuthToken } from '@/services/auth'
 
 export default {
   name: 'PopNewCard',
-  inject: ['auth', 'tasksData'], 
   setup() {
     const router = useRouter()
-    const auth = inject('auth')
     const tasksData = inject('tasksData')
-    return { router, auth, tasksData }
-  },
-  methods: {
-    closeModal() {
-      this.$router.push('/')
-    },
-    async createTask() {
-      this.isLoading = true
-      this.error = ''
 
-      try {
-        const token = this.auth.getToken()
-        const taskData = {
-          title: this.title,
-          description: this.description,
-          topic: this.selectedTopic,
-          date: this.selectedDate,
-          status: 'Без статуса'
-        }
+    const title = ref('')
+    const description = ref('')
+    const selectedTopic = ref(null)
+    const selectedDate = ref(new Date())
+    const isLoading = ref(false)
+    const error = ref('')
+    const currentMonth = ref(new Date().getMonth())
+    const currentYear = ref(new Date().getFullYear())
 
-        await postTasks({ token, task: taskData })
-        this.closeModal()
+    const monthNames = [
+      'Январь',
+      'Февраль',
+      'Март',
+      'Апрель',
+      'Май',
+      'Июнь',
+      'Июль',
+      'Август',
+      'Сентябрь',
+      'Октябрь',
+      'Ноябрь',
+      'Декабрь',
+    ]
 
-        this.tasksData.refreshTasks()
-      } catch (error) {
-        console.error('Ошибка создания задачи:', error)
-        this.error = error.message || 'Ошибка создания задачи'
-      } finally {
-        this.isLoading = false
+    const formatDayNumber = (day) => {
+      return day.toString().padStart(2, '0')
+    }
+
+    const formattedSelectedDate = computed(() => {
+      if (!selectedDate.value) return 'не выбрана'
+
+      const day = selectedDate.value.getDate().toString().padStart(2, '0')
+      const month = (selectedDate.value.getMonth() + 1).toString().padStart(2, '0')
+      const year = selectedDate.value.getFullYear().toString().slice(-2)
+
+      return `${day}.${month}.${year}`
+    })
+
+    const apiFormattedDate = computed(() => {
+      if (!selectedDate.value) return ''
+      const year = selectedDate.value.getFullYear()
+      const month = (selectedDate.value.getMonth() + 1).toString().padStart(2, '0')
+      const day = selectedDate.value.getDate().toString().padStart(2, '0')
+
+      return `${year}-${month}-${day}`
+    })
+
+    const calendarDays = computed(() => {
+      const days = []
+      const firstDayOfMonth = new Date(currentYear.value, currentMonth.value, 1)
+      const lastDayOfMonth = new Date(currentYear.value, currentMonth.value + 1, 0)
+
+      const firstDayWeekday = firstDayOfMonth.getDay() === 0 ? 7 : firstDayOfMonth.getDay()
+      const daysFromPrevMonth = firstDayWeekday - 1
+      const lastDayOfPrevMonth = new Date(currentYear.value, currentMonth.value, 0).getDate()
+
+      for (let i = daysFromPrevMonth - 1; i >= 0; i--) {
+        const day = lastDayOfPrevMonth - i
+        days.push({
+          id: `prev-${day}`,
+          day: day,
+          date: new Date(currentYear.value, currentMonth.value - 1, day),
+          isCurrentMonth: false,
+          isWeekend: false,
+          isToday: false,
+          isSelected: false,
+        })
+      }
+
+      const today = new Date()
+      for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
+        const date = new Date(currentYear.value, currentMonth.value, day)
+        const isWeekend = date.getDay() === 0 || date.getDay() === 6
+        const isToday = date.toDateString() === today.toDateString()
+        const isSelected =
+          selectedDate.value && date.toDateString() === selectedDate.value.toDateString()
+
+        days.push({
+          id: `current-${day}`,
+          day: day,
+          date: date,
+          isCurrentMonth: true,
+          isWeekend: isWeekend,
+          isToday: isToday,
+          isSelected: isSelected,
+        })
+      }
+
+      const totalCells = 42
+      const remainingCells = totalCells - days.length
+      for (let day = 1; day <= remainingCells; day++) {
+        days.push({
+          id: `next-${day}`,
+          day: day,
+          date: new Date(currentYear.value, currentMonth.value + 1, day),
+          isCurrentMonth: false,
+          isWeekend: false,
+          isToday: false,
+          isSelected: false,
+        })
+      }
+
+      return days
+    })
+
+    const selectDate = (day) => {
+      if (day.isCurrentMonth) {
+        selectedDate.value = day.date
       }
     }
-  }
+
+    const changeMonth = (direction) => {
+      currentMonth.value += direction
+      if (currentMonth.value > 11) {
+        currentMonth.value = 0
+        currentYear.value += 1
+      } else if (currentMonth.value < 0) {
+        currentMonth.value = 11
+        currentYear.value -= 1
+      }
+    }
+
+    const handleCreateTask = async () => {
+      if (!title.value.trim()) {
+        error.value = 'Введите название задачи'
+        return
+      }
+
+      if (!description.value.trim()) {
+        error.value = 'Введите описание задачи'
+        return
+      }
+
+      if (!selectedTopic.value) {
+        error.value = 'Выберите категорию'
+        return
+      }
+
+      if (!selectedDate.value) {
+        error.value = 'Выберите дату'
+        return
+      }
+
+      isLoading.value = true
+      error.value = ''
+
+      try {
+        const token = getAuthToken()
+        if (!token) {
+          throw new Error('Требуется авторизация')
+        }
+
+        const taskData = {
+          title: title.value.trim(),
+          description: description.value.trim(),
+          topic: selectedTopic.value,
+          date: apiFormattedDate.value,
+          status: 'В работе',
+        }
+
+        const updatedTasks = await postTasks({ token, task: taskData })
+
+        if (tasksData && typeof tasksData.setTasks === 'function') {
+          tasksData.setTasks(updatedTasks)
+        }
+
+        closeModal()
+      } catch (err) {
+        error.value = err.message || 'Ошибка создания задачи'
+      } finally {
+        isLoading.value = false
+      }
+    }
+
+    const closeModal = () => {
+      router.push('/')
+    }
+
+    onMounted(() => {
+      document.body.classList.add('popup-open')
+    })
+
+    return {
+      title,
+      description,
+      selectedTopic,
+      selectedDate,
+      isLoading,
+      error,
+      currentMonth: computed(() => monthNames[currentMonth.value]),
+      currentYear,
+      calendarDays,
+      formattedSelectedDate,
+      formatDayNumber,
+      selectDate,
+      changeMonth,
+      handleCreateTask,
+      closeModal,
+    }
+  },
+
+  beforeUnmount() {
+    document.body.classList.remove('popup-open')
+  },
 }
 </script>
 
 <style scoped>
 .pop-new-card {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -195,7 +385,6 @@ export default {
 .pop-new-card__container {
   width: 100%;
   height: 100%;
-  min-height: 100vh;
   padding: 0 16px;
   display: flex;
   flex-direction: column;
@@ -203,6 +392,11 @@ export default {
   justify-content: center;
   background: rgba(0, 0, 0, 0.4);
 }
+
+body.popup-open {
+  overflow: hidden;
+}
+
 .pop-new-card__block {
   margin: 0 auto;
   background-color: #ffffff;
@@ -406,6 +600,10 @@ export default {
   opacity: 1 !important;
 }
 
+.form-new__block {
+  display: flex;
+  flex-direction: column;
+}
 .form-new__input,
 .form-new__area {
   width: 100%;
@@ -417,6 +615,8 @@ export default {
   font-size: 14px;
   line-height: 1;
   letter-spacing: -0.14px;
+  resize: none;
+  font-family: inherit;
 }
 
 .form-new__input {
@@ -427,6 +627,25 @@ export default {
   max-width: 370px;
   margin-top: 14px;
   height: 200px;
+}
+
+.form-new__input::-moz-placeholder,
+.form-new__area::-moz-placeholder {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1px;
+  color: #94a6be;
+  letter-spacing: -0.14px;
+  font-family: inherit;
+}
+.form-new__input::placeholder,
+.form-new__area::placeholder {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1px;
+  color: #94a6be;
+  letter-spacing: -0.14px;
+  font-family: inherit;
 }
 
 .form-new__create {
@@ -445,60 +664,6 @@ export default {
 
 .form-new__create:hover {
   background-color: #33399b;
-}
-
-.form-new__block {
-  display: flex;
-  flex-direction: column;
-}
-.form-new__input,
-.form-new__area {
-  width: 100%;
-  outline: none;
-  padding: 14px;
-  background: transparent;
-  border: 0.7px solid rgba(148, 166, 190, 0.4);
-  border-radius: 8px;
-  font-size: 14px;
-  line-height: 1;
-  letter-spacing: -0.14px;
-}
-.form-new__input::-moz-placeholder,
-.form-new__area::-moz-placeholder {
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 1px;
-  color: #94a6be;
-  letter-spacing: -0.14px;
-}
-.form-new__input::placeholder,
-.form-new__area::placeholder {
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 1px;
-  color: #94a6be;
-  letter-spacing: -0.14px;
-}
-.form-new__input {
-  margin: 20px 0;
-}
-.form-new__area {
-  max-width: 370px;
-  margin-top: 14px;
-  height: 200px;
-}
-.form-new__create {
-  width: 132px;
-  height: 30px;
-  background-color: #565eef;
-  border-radius: 4px;
-  border: 0;
-  outline: none;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1;
-  color: #ffffff;
-  float: right;
 }
 
 @media screen and (max-width: 660px) {

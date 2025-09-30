@@ -24,8 +24,7 @@ export async function postTasks({ token, task }) {
         'Content-Type': '',
       },
     })
-    console.log('Ответ сервера:', data);
-return data.data.tasks;
+    return data.data.tasks
   } catch (error) {
     if (error.response?.status === 400) {
       throw new Error('Неверный формат данных')
@@ -43,7 +42,7 @@ export async function getTasksById({ token, id }) {
     })
     return data.data
   } catch (error) {
-     if (error.response?.status === 404) {
+    if (error.response?.status === 404) {
       throw new Error('Задача не найдена')
     }
     throw new Error(error.response?.data?.error || error.message)
@@ -51,15 +50,31 @@ export async function getTasksById({ token, id }) {
 }
 
 export async function editTask({ token, id, task }) {
-   try {
-      const data = await axios.put(API_URL + '/' + id, task, {
-         headers: {
-            Authorization: 'Bearer ' + token,
-            'Content-Type': '',
-         },
-      })
-   return data.data.tasks
-   } catch (error) {
-     throw new Error(error.response?.data?.error || error.message)
+  try {
+    const data = await axios.put(API_URL + '/' + id, task, {
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': '',
+      },
+    })
+    return data.data.tasks
+  } catch (error) {
+    throw new Error(error.response?.data?.error || error.message)
+  }
+}
+
+export async function deleteTask({ token, id }) {
+  try {
+    const response = await axios.delete(API_URL + '/' + id, {
+      headers: {
+        Authorization: 'Bearer ' + token
+      },
+    })
+    return response.data.tasks
+  } catch (error) {
+    if (error.response?.status === 404) {
+      throw new Error('Задача не найдена')
+    }
+    throw new Error(error.response?.data?.error || error.message)
   }
 }

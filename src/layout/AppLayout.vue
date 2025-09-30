@@ -68,7 +68,6 @@ export default {
       onMounted(() => {
          try {
             const data = localStorage.getItem('userInfo')
-            console.log(data)
             if (data) {
                userInfo.value = JSON.parse(data)
             }
