@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, provide, inject } from 'vue' 
+import { ref, computed, onMounted, provide, inject } from 'vue'
 import { useRouter } from 'vue-router'
 import { fetchTasks } from '@/services/api'
 import BaseHeader from '@/components/BaseHeader.vue'
@@ -69,14 +69,30 @@ export default {
           column.tasks = tasks.value.filter((task) => task.status === column.status)
         })
       } catch (err) {
-        console.error('Ошибка загрузки задач:', err)
         error.value = err.message
         if (err.message.includes('авторизация')) {
-          auth.removeUser() 
+          auth.removeUser()
           router.push('/login')
         }
       } finally {
         loading.value = false
+      }
+    }
+
+    const setTasks = (newTasks) => {
+      tasks.value = newTasks
+      columns.value.forEach((column) => {
+        column.tasks = tasks.value.filter((task) => task.status === column.status)
+      })
+    }
+
+    const updateSingleTask = (updatedTask) => {
+      const taskIndex = tasks.value.findIndex((task) => task._id === updatedTask._id)
+      if (taskIndex !== -1) {
+        tasks.value[taskIndex] = updatedTask
+        columns.value.forEach((column) => {
+          column.tasks = tasks.value.filter((task) => task.status === column.status)
+        })
       }
     }
 
@@ -86,10 +102,18 @@ export default {
       error,
       columns,
       refreshTasks: loadTasks,
+      setTasks,
+      updateTask: updateSingleTask,
+      removeTask: (taskId) => {
+        tasks.value = tasks.value.filter((task) => task._id !== taskId)
+        columns.value.forEach((column) => {
+          column.tasks = tasks.value.filter((task) => task.status === column.status)
+        })
+      },
     })
 
     const openCreateModal = () => {
-      router.push('/new-card') 
+      router.push('/new-card')
     }
 
     onMounted(() => {
@@ -97,7 +121,9 @@ export default {
         router.push('/login')
         return
       }
-      loadTasks()
+      if (tasks.value.length === 0) {
+        loadTasks()
+      }
     })
 
     return {

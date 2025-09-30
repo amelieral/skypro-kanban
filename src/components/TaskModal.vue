@@ -5,8 +5,8 @@
         <div class="pop-browse__content">
           <div class="pop-browse__top-block">
             <h3 class="pop-browse__ttl">Название задачи</h3>
-            <div class="categories__theme theme-top" :class="getThemeClass(task.topic)">
-              <p :class="getTextClass(task.topic)">{{ task.topic }}</p>
+            <div class="categories__theme theme-top" :class="getThemeClass(currentTask.topic)">
+              <p :class="getTextClass(currentTask.topic)">{{ currentTask.topic }}</p>
             </div>
           </div>
           <div v-if="error" class="error-message" style="color: red; margin-bottom: 15px">
@@ -20,10 +20,8 @@
                 :key="statusOption.value"
                 class="status__theme"
                 :class="{
-                  _active:
-                    (!isEditing && statusOption.value === task.status) ||
-                    (isEditing && statusOption.value === editedTask.status),
-                  _hide: !isEditing && statusOption.value !== task.status,
+                  _active: statusOption.value === currentTask.status,
+                  _hide: !isEditing && statusOption.value !== currentTask.status,
                   _visible: isEditing,
                 }"
                 @click="isEditing && (editedTask.status = statusOption.value)"
@@ -122,8 +120,12 @@
           </div>
           <div class="theme-down__categories theme-down">
             <p class="categories__p subttl">Категория</p>
-            <div v-if="!isEditing" class="categories__theme" :class="getThemeClass(task.topic)">
-              <p :class="getTextClass(task.topic)">{{ task.topic }}</p>
+            <div
+              v-if="!isEditing"
+              class="categories__theme"
+              :class="getThemeClass(currentTask.topic)"
+            >
+              <p :class="getTextClass(currentTask.topic)">{{ currentTask.topic }}</p>
             </div>
             <select v-else v-model="editedTask.topic" class="form-browse__select">
               <option value="Web Design">Web Design</option>
@@ -181,7 +183,6 @@ import { ref, computed, onMounted, inject } from 'vue'
 import { useRouter } from 'vue-router'
 import { deleteTask, editTask as apiEditTask } from '@/services/api.js'
 import { getValidToken } from '@/services/auth.js'
-
 export default {
   name: 'TaskModal',
   props: {
@@ -193,7 +194,6 @@ export default {
   setup(props) {
     const router = useRouter()
     const tasksData = inject('tasksData')
-
     const currentMonth = ref(new Date().getMonth())
     const currentYear = ref(new Date().getFullYear())
     const isEditing = ref(false)
@@ -207,7 +207,9 @@ export default {
     const error = ref('')
     const isDeleting = ref(false)
     const isSaving = ref(false)
-
+    const currentTask = computed(() => {
+      return isEditing.value ? editedTask.value : props.task
+    })
     const statusOptions = [
       { value: 'Без статуса', label: 'Без статуса' },
       { value: 'Нужно сделать', label: 'Нужно сделать' },
@@ -215,7 +217,6 @@ export default {
       { value: 'Тестирование', label: 'Тестирование' },
       { value: 'Готово', label: 'Готово' },
     ]
-
     const monthNames = [
       'Январь',
       'Февраль',
@@ -230,9 +231,8 @@ export default {
       'Ноябрь',
       'Декабрь',
     ]
-
     const formattedTaskDate = computed(() => {
-      const dateToUse = isEditing.value ? editedTask.value.date : props.task?.date
+      const dateToUse = currentTask.value?.date
       if (!dateToUse) return 'Дата не указана'
       const date = new Date(dateToUse)
       const month = monthNames[date.getMonth()]
@@ -241,7 +241,7 @@ export default {
     })
 
     const formattedTaskDateShort = computed(() => {
-      const dateToUse = isEditing.value ? editedTask.value.date : props.task?.date
+      const dateToUse = currentTask.value?.date
       if (!dateToUse) return 'не указан'
       const date = new Date(dateToUse)
       const day = date.getDate().toString().padStart(2, '0')
@@ -249,9 +249,7 @@ export default {
       const year = date.getFullYear().toString().slice(-2)
       return `${day}.${month}.${year}`
     })
-
     const currentMonthName = computed(() => monthNames[currentMonth.value])
-
     const getThemeClass = (topic) => {
       const themes = {
         'Web Design': '_orange',
@@ -260,7 +258,6 @@ export default {
       }
       return themes[topic] || '_gray'
     }
-
     const getTextClass = (topic) => {
       const themes = {
         'Web Design': '_orange',
@@ -269,20 +266,16 @@ export default {
       }
       return themes[topic] ? `_${topic.toLowerCase().replace(' ', '-')}` : '_gray'
     }
-
     const formatDayNumber = (day) => {
       return day.toString().padStart(2, '0')
     }
-
     const calendarDays = computed(() => {
       const days = []
       const firstDayOfMonth = new Date(currentYear.value, currentMonth.value, 1)
       const lastDayOfMonth = new Date(currentYear.value, currentMonth.value + 1, 0)
-
       const firstDayWeekday = firstDayOfMonth.getDay() === 0 ? 7 : firstDayOfMonth.getDay()
       const daysFromPrevMonth = firstDayWeekday - 1
       const lastDayOfPrevMonth = new Date(currentYear.value, currentMonth.value, 0).getDate()
-
       for (let i = daysFromPrevMonth - 1; i >= 0; i--) {
         const day = lastDayOfPrevMonth - i
         days.push({
@@ -295,16 +288,13 @@ export default {
           isSelected: false,
         })
       }
-
       const today = new Date()
       const taskDate = editedTask.value.date ? new Date(editedTask.value.date) : null
-
       for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
         const date = new Date(currentYear.value, currentMonth.value, day)
         const isWeekend = date.getDay() === 0 || date.getDay() === 6
         const isToday = date.toDateString() === today.toDateString()
         const isSelected = taskDate && date.toDateString() === taskDate.toDateString()
-
         days.push({
           id: `current-${day}`,
           day: day,
@@ -315,7 +305,6 @@ export default {
           isSelected: isSelected,
         })
       }
-
       const totalCells = 42
       const remainingCells = totalCells - days.length
       for (let day = 1; day <= remainingCells; day++) {
@@ -329,10 +318,8 @@ export default {
           isSelected: false,
         })
       }
-
       return days
     })
-
     const changeMonth = (direction) => {
       currentMonth.value += direction
       if (currentMonth.value > 11) {
@@ -343,20 +330,15 @@ export default {
         currentYear.value -= 1
       }
     }
-
     const selectDate = (day) => {
       if (!isEditing.value || !day.isCurrentMonth) return
-
       const selectedDate = new Date(day.date)
       const timezoneOffset = selectedDate.getTimezoneOffset() * 60000
       const correctedDate = new Date(selectedDate.getTime() - timezoneOffset)
-
       editedTask.value.date = correctedDate.toISOString().split('T')[0]
     }
-
     const startEditing = () => {
       isEditing.value = true
-
       if (props.task?.date) {
         const taskDate = new Date(props.task.date)
         currentMonth.value = taskDate.getMonth()
@@ -366,7 +348,6 @@ export default {
 
     const saveTask = async () => {
       const taskId = props.task?._id
-
       if (!taskId) {
         error.value = 'Ошибка: не удалось найти ID задачи для редактирования'
         return
@@ -397,22 +378,14 @@ export default {
           return
         }
 
-        await apiEditTask({
+        const updatedTasks = await apiEditTask({
           token,
           id: taskId,
           task: editedTask.value,
         })
 
-        Object.assign(props.task, {
-          title: editedTask.value.title,
-          description: editedTask.value.description,
-          topic: editedTask.value.topic,
-          status: editedTask.value.status,
-          date: editedTask.value.date,
-        })
-
-        if (tasksData && typeof tasksData.refreshTasks === 'function') {
-          await tasksData.refreshTasks()
+        if (tasksData && typeof tasksData.setTasks === 'function') {
+          tasksData.setTasks(updatedTasks)
         }
 
         isEditing.value = false
@@ -435,16 +408,10 @@ export default {
       isEditing.value = false
       error.value = ''
     }
-
     const handleDeleteTask = async () => {
       const taskId = props.task?._id
-
       if (!taskId) {
         error.value = 'Ошибка: не удалось найти ID задачи для удаления'
-        return
-      }
-
-      if (!confirm('Вы уверены, что хотите удалить эту задачу?')) {
         return
       }
 
@@ -460,8 +427,8 @@ export default {
 
         await deleteTask({ token, id: taskId })
 
-        if (tasksData && typeof tasksData.refreshTasks === 'function') {
-          await tasksData.refreshTasks()
+        if (tasksData && typeof tasksData.removeTask === 'function') {
+          tasksData.removeTask(taskId)
         }
 
         closeModal()
@@ -471,21 +438,19 @@ export default {
         isDeleting.value = false
       }
     }
-
     const closeModal = () => {
       router.push('/')
     }
-
     onMounted(() => {
       document.body.classList.add('popup-open')
     })
-
     return {
       isEditing,
       editedTask,
       error,
       isDeleting,
       isSaving,
+      currentTask,
       currentMonth: currentMonthName,
       currentYear,
       formattedTaskDate,
@@ -504,7 +469,6 @@ export default {
       closeModal,
     }
   },
-
   beforeUnmount() {
     document.body.classList.remove('popup-open')
   },

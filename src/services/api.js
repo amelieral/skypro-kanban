@@ -24,7 +24,6 @@ export async function postTasks({ token, task }) {
         'Content-Type': '',
       },
     })
-    console.log('Ответ сервера:', data)
     return data.data.tasks
   } catch (error) {
     if (error.response?.status === 400) {
@@ -58,7 +57,7 @@ export async function editTask({ token, id, task }) {
         'Content-Type': '',
       },
     })
-    return data.data
+    return data.data.tasks
   } catch (error) {
     throw new Error(error.response?.data?.error || error.message)
   }
@@ -68,10 +67,10 @@ export async function deleteTask({ token, id }) {
   try {
     const response = await axios.delete(API_URL + '/' + id, {
       headers: {
-        Authorization: 'Bearer ' + token,
+        Authorization: 'Bearer ' + token
       },
     })
-    return response.data
+    return response.data.tasks
   } catch (error) {
     if (error.response?.status === 404) {
       throw new Error('Задача не найдена')

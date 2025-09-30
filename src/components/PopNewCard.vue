@@ -203,7 +203,11 @@ export default {
 
     const apiFormattedDate = computed(() => {
       if (!selectedDate.value) return ''
-      return selectedDate.value.toISOString().split('T')[0]
+      const year = selectedDate.value.getFullYear()
+      const month = (selectedDate.value.getMonth() + 1).toString().padStart(2, '0')
+      const day = selectedDate.value.getDate().toString().padStart(2, '0')
+
+      return `${year}-${month}-${day}`
     })
 
     const calendarDays = computed(() => {
@@ -316,13 +320,13 @@ export default {
           description: description.value.trim(),
           topic: selectedTopic.value,
           date: apiFormattedDate.value,
-          status: 'Нужно сделать',
+          status: 'В работе',
         }
 
-        await postTasks({ token, task: taskData })
+        const updatedTasks = await postTasks({ token, task: taskData })
 
-        if (tasksData && typeof tasksData.refreshTasks === 'function') {
-          await tasksData.refreshTasks()
+        if (tasksData && typeof tasksData.setTasks === 'function') {
+          tasksData.setTasks(updatedTasks)
         }
 
         closeModal()

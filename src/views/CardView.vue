@@ -8,56 +8,39 @@
 </template>
 
 <script>
+import { inject, computed, watch, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import TaskModal from '@/components/TaskModal.vue'
-import { getTasksById } from '@/services/api'
-import { getValidToken } from '@/services/auth.js'
 
 export default {
   name: 'CardView',
   components: { TaskModal },
-  data() {
-    return {
-      task: null,
-      loading: true,
-      error: null,
-    }
-  },
-  async mounted() {
-    await this.loadTask()
-  },
-  watch: {
-    '$route.params.id': {
-      handler: 'loadTask',
-      immediate: false,
-    },
-  },
-  methods: {
-    async loadTask() {
-      try {
-        this.loading = true
-        this.error = null
-        this.task = null
+  setup() {
+    const tasksData = inject('tasksData')
+    const route = useRoute()
 
-        const taskId = this.$route.params.id
-        if (!taskId) {
-          throw new Error('ID задачи не указан')
+    const error = ref(null)
+    const loading = tasksData.loading
+
+    const taskId = computed(() => route.params.id)
+
+    const task = computed(() => {
+      return tasksData.tasks.value.find((t) => t._id === taskId.value) || null
+    })
+
+    const loadTaskIfNeeded = async () => {
+      error.value = null
+      if (!task.value) {
+        await tasksData.refreshTasks()
+        if (!tasksData.tasks.value.find((t) => t._id === taskId.value)) {
+          error.value = 'Задача не найдена'
         }
-
-        const token = getValidToken()
-        const response = await getTasksById({ token, id: taskId })
-
-        if (response && response.task) {
-          this.task = response.task
-        } else {
-          throw new Error('Задача не найдена в ответе API')
-        }
-      } catch (error) {
-        console.error('Ошибка загрузки задачи:', error)
-        this.error = error.message || 'Произошла ошибка при загрузке задачи'
-      } finally {
-        this.loading = false
       }
-    },
+    }
+
+    watch(taskId, loadTaskIfNeeded, { immediate: true })
+
+    return { task, error, loading }
   },
 }
 </script>
